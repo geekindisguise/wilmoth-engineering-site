@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacob Wilmoth — Electrical Engineer &amp; Visual Storyteller</title>
+<meta name="description" content="Wilmoth Engineering — EV conversion engineering, embedded hardware, iOS development, and cinematic photography by Jacob Wilmoth.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230B0E14%22/><path d=%22M20 50 L40 50 L48 30 L58 70 L68 50 L80 50%22 stroke=%22%2344E5D4%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" id="top">
+  <div class="wrap header-inner">
+    <a href="#top" class="brand" aria-label="Wilmoth Engineering — home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="28" height="28">
+          <path d="M6 20 L14 20 L18 10 L24 30 L28 20 L34 20" stroke="currentColor" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-text">Wilmoth<span class="brand-dot">.</span>Engineering</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navList">
+        <span></span><span></span><span></span>
+        <span class="sr-only">Menu</span>
+      </button>
+      <ul class="nav-list" id="navList">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="hero">
+    <canvas id="circuitCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero-fallback" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <p class="eyebrow mono">EE · <span class="accent-amber">Consultant</span> · Photographer</p>
+      <h1 class="hero-title">
+        <span class="line">Jacob</span>
+        <span class="line">Wilmoth<span class="cursor-blip" aria-hidden="true">_</span></span>
+      </h1>
+      <p class="hero-sub">
+        I design the circuits that move things, and I shoot the frames that move people.
+        Electrical engineering and visual craft, run out of one small studio.
+      </p>
+      <div class="hero-actions">
+        <a href="#work" class="btn btn-primary">See the work</a>
+        <a href="#contact" class="btn btn-ghost">Start a project</a>
+      </div>
+      <p class="hero-hint mono" id="hint-text">click the board — energize it</p>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT / DATASHEET ================= -->
+  <section class="section about" id="about">
+    <div class="wrap about-grid">
+      <div class="about-copy reveal">
+        <p class="eyebrow mono">01 — About</p>
+        <h2>Two disciplines, one signal.</h2>
+        <p>
+          I'm an electrical engineer by trade and a photographer by obsession. Days go to
+          load calculations, wiring harnesses, and firmware; the rest goes to lenses,
+          light, and motion. Wilmoth Engineering is where those two halves actually
+          talk to each other — EV conversions with dashboards worth looking at,
+          consulting work that gets documented like it matters, and a growing habit
+          of shooting the process along the way.
+        </p>
+        <p>
+          Based remotely, working with clients who need someone equally comfortable
+          in a schematic and behind a camera.
+        </p>
+      </div>
+
+      <div class="datasheet reveal" role="img" aria-label="Spec sheet styled biography of Jacob Wilmoth: Engineer and creative, remote-capable, EV conversions and embedded systems specialty.">
+        <div class="datasheet-head">
+          <span class="mono ds-part">PART NO. JMW&#8209;01</span>
+          <span class="mono ds-rev">REV C</span>
+        </div>
+        <h3 class="mono">JACOB WILMOTH</h3>
+        <table class="ds-table">
+          <tbody>
+            <tr><th>Type</th><td>Electrical Engineer / Visual Artist</td></tr>
+            <tr><th>Package</th><td>Remote, project or retainer</td></tr>
+            <tr><th>Core skills</th><td>EV conversion systems, embedded firmware, iOS apps</td></tr>
+            <tr><th>Creative output</th><td>Photography, cinematography</td></tr>
+            <tr><th>Operating temp</th><td>Comfortable under deadline pressure</td></tr>
+            <tr><th>Interfaces</th><td>Schematic, camera, code, client</td></tr>
+            <tr><th>Status</th><td><span class="ds-status">● ACTIVE</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WORK ================= -->
+  <section class="section work" id="work">
+    <div class="wrap">
+      <p class="eyebrow mono reveal">02 — Selected Work</p>
+      <h2 class="reveal">Projects that shipped, and rigs still on the bench.</h2>
+      <p class="section-sub reveal">
+        A running log of engineering builds, apps, and consulting work.
+        New projects get added here as they ship.
+      </p>
+
+      <div class="project-grid" id="projectGrid">
+        <!-- injected by js/main.js from PROJECTS data -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section class="section contact" id="contact">
+    <div class="wrap contact-inner reveal">
+      <p class="eyebrow mono">03 — Contact</p>
+      <h2>Have a build in mind?</h2>
+      <p class="section-sub">
+        EV conversions, off-grid electrical, embedded hardware, iOS apps, or a shoot —
+        tell me what you're working on.
+      </p>
+      <a class="contact-email mono" href="mailto:hello@wilmoth.engineering">hello@wilmoth.engineering</a>
+      <p class="contact-note">Wilmoth Engineering, LLC — remote consulting, worldwide.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>&copy; 2026 Wilmoth.Engineering. All rights reserved.</p>
+    <nav class="footer-nav" aria-label="Legal">
+      <a href="index.html">Home</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="js/circuit.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
