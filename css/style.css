@@ -211,10 +211,9 @@ h3 { font-size: 1.15rem; }
     repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 42px);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-canvas { display: none; }
-  .hero-fallback { display: block; }
-}
+/* Under reduced motion, circuit.js still renders a static PCB frame onto
+   the canvas (see js/circuit.js), so keep it visible and leave the plain
+   gradient fallback hidden. */
 
 .hero-inner {
   position: relative;
