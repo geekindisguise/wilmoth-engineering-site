@@ -1,0 +1,21 @@
+{
+	admin off
+	persist_config off
+	auto_https off
+	log {
+		format json
+	}
+	servers {
+		trusted_proxies static private_ranges 100.0.0.0/8
+	}
+}
+
+:{$PORT:3000} {
+	log {
+		format json
+	}
+	root * /usr/share/caddy
+	encode gzip
+	try_files {path} {path}.html {path}/index.html
+	file_server
+}

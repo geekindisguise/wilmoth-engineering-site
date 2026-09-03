@@ -75,8 +75,16 @@ array, in order.
 
 ## Legal pages
 
+`cannery/privacy/` (and `cannery/privacy.html`) host the CANnery privacy policy **verbatim** from the app (`docs/privacy.md` / in-app Help). App Store Connect and the in-app link use `https://wilmoth.engineering/cannery/privacy`. Do not reword. Doodle stays at `/privacy.html` and `/terms.html`.
+
 `privacy.html` and `terms.html` reproduce the Doodle A Day privacy policy
 and terms of service **verbatim** — the App Store listing links directly
 to these URLs, so the paths (`/privacy.html`, `/terms.html`) and the
 wording must not change. Restyle the surrounding header/footer chrome
 freely; leave the legal copy itself untouched.
+
+
+## Hosting
+
+Live on Railway (`wilmoth-engineering`). Apex is `wilmoth.engineering`.
+Do not serve `luke/` (local only). Home Caddy is no longer the origin for this site.
