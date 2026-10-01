@@ -34,6 +34,21 @@ var PROJECTS = [
     ]
   },
   {
+    id: 'cannery',
+    title: 'CANnery',
+    category: 'Mac & iPad App · Shipped',
+    accent: 'cyan',
+    gradient: 'linear-gradient(135deg, #0E2228, #163840 60%, #46E4D322)',
+    glyph: 'SwiftUI · App Store',
+    description: 'A native CAN bus analyzer for Mac and iPad. Import ASC, BLF or CSV logs, load DBC files, and read every decoded signal as a chart or a raw trace.',
+    tags: ['CAN Bus', 'DBC', 'J1939'],
+    links: [
+      { label: 'App Store', href: 'https://apps.apple.com/us/app/cannery/id6807928738', external: true },
+      { label: 'Privacy', href: '/cannery/privacy' },
+      { label: 'Support', href: '/cannery/support' }
+    ]
+  },
+  {
     id: 'ev-conversions',
     title: 'EV Conversions — Rosie & Wall-E',
     category: 'EV Engineering',
@@ -66,10 +81,10 @@ var PROJECTS = [
     accent: 'amber',
     gradient: 'linear-gradient(135deg, #241812, #3A2414 60%, #FF9A4D22)',
     glyph: 'Stills · Motion',
-    description: 'Visual work outside the lab — landscape and portrait photography, with a growing body of cinematic short-form video. Gallery drops as new work ships.',
+    description: 'Visual work outside the lab — landscape and portrait photography, with a growing body of cinematic short-form video. The gallery is live.',
     tags: ['Photography', 'Color', 'Cinematography'],
     links: [
-      { label: 'Gallery — coming soon', href: '#contact' }
+      { label: 'View the photography', href: 'https://jacobwilmoth.com', external: true }
     ]
   },
   {
