@@ -25,12 +25,29 @@ var PROJECTS = [
     accent: 'amber',
     gradient: 'linear-gradient(135deg, #2A1B12, #402615 60%, #FF9A4D22)',
     glyph: 'SwiftUI · App Store',
+    image: 'assets/DoodleADay-AppIcon-1024.png',
     description: 'A daily doodling and mood journal for iPhone. One prompt a day, one quick sketch, a running visual diary of how you’ve been feeling.',
     tags: ['SwiftUI', 'iOS', 'StoreKit'],
     links: [
       { label: 'App Store', href: 'https://apps.apple.com/', external: true },
       { label: 'Privacy', href: 'privacy.html' },
       { label: 'Terms', href: 'terms.html' }
+    ]
+  },
+  {
+    id: 'cannery',
+    title: 'CANnery',
+    category: 'Mac & iPad App · Shipped',
+    accent: 'cyan',
+    gradient: 'linear-gradient(135deg, #0E2228, #163840 60%, #46E4D322)',
+    glyph: 'SwiftUI · App Store',
+    image: 'assets/CANnery_Icon_Dock_Light.png',
+    description: 'A native CAN bus analyzer for Mac and iPad. Import ASC, BLF or CSV logs, load DBC files, and read every decoded signal as a chart or a raw trace.',
+    tags: ['CAN Bus', 'DBC', 'J1939'],
+    links: [
+      { label: 'App Store', href: 'https://apps.apple.com/us/app/cannery/id6807928738', external: true },
+      { label: 'Privacy', href: '/cannery/privacy' },
+      { label: 'Support', href: '/cannery/support' }
     ]
   },
   {
@@ -66,10 +83,11 @@ var PROJECTS = [
     accent: 'amber',
     gradient: 'linear-gradient(135deg, #241812, #3A2414 60%, #FF9A4D22)',
     glyph: 'Stills · Motion',
-    description: 'Visual work outside the lab — landscape and portrait photography, with a growing body of cinematic short-form video. Gallery drops as new work ships.',
+    image: 'assets/dsc06578-960.webp',
+    description: 'Visual work outside the lab — landscape and portrait photography, with a growing body of cinematic short-form video. The gallery is live.',
     tags: ['Photography', 'Color', 'Cinematography'],
     links: [
-      { label: 'Gallery — coming soon', href: '#contact' }
+      { label: 'View the photography', href: 'https://jacobwilmoth.com', external: true }
     ]
   },
   {
