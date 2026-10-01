@@ -12,8 +12,6 @@
  *   gradient    CSS background (string) — swap for a real photo:
  *               set `image: "assets/your-photo.jpg"` instead and it
  *               will be used as a cover image behind the glyph.
- *   imageFit    optional "contain" — keep a square icon whole on the
- *               gradient. Omit it and the image covers the media.
  *   glyph       short mono tag shown on the card media, e.g. "iOS · SwiftUI"
  *   description short 1-2 sentence summary (string)
  *   tags        array of short strings (tech/skills)
@@ -28,7 +26,6 @@ var PROJECTS = [
     gradient: 'linear-gradient(135deg, #2A1B12, #402615 60%, #FF9A4D22)',
     glyph: 'SwiftUI · App Store',
     image: 'assets/DoodleADay-AppIcon-1024.png',
-    imageFit: 'contain',
     description: 'A daily doodling and mood journal for iPhone. One prompt a day, one quick sketch, a running visual diary of how you’ve been feeling.',
     tags: ['SwiftUI', 'iOS', 'StoreKit'],
     links: [
@@ -45,7 +42,6 @@ var PROJECTS = [
     gradient: 'linear-gradient(135deg, #0E2228, #163840 60%, #46E4D322)',
     glyph: 'SwiftUI · App Store',
     image: 'assets/CANnery_Icon_Dock_Light.png',
-    imageFit: 'contain',
     description: 'A native CAN bus analyzer for Mac and iPad. Import ASC, BLF or CSV logs, load DBC files, and read every decoded signal as a chart or a raw trace.',
     tags: ['CAN Bus', 'DBC', 'J1939'],
     links: [
@@ -131,9 +127,8 @@ function renderProjects() {
     media.style.background = p.gradient;
     if (p.image) {
       media.style.backgroundImage = 'url(' + p.image + '), ' + p.gradient;
-      media.style.backgroundRepeat = 'no-repeat';
+      media.style.backgroundSize = 'cover';
       media.style.backgroundPosition = 'center';
-      media.style.backgroundSize = p.imageFit === 'contain' ? 'contain, cover' : 'cover';
     }
     var glyph = document.createElement('span');
     glyph.className = 'card-glyph mono';
