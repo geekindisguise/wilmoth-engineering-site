@@ -77,6 +77,8 @@ array, in order.
 
 `cannery/privacy/` (and `cannery/privacy.html`) host the CANnery privacy policy **verbatim** from the app (`docs/privacy.md` / in-app Help). App Store Connect and the in-app link use `https://wilmoth.engineering/cannery/privacy`. Do not reword. Doodle stays at `/privacy.html` and `/terms.html`.
 
+`lodebook/privacy/` (and `lodebook/privacy.html`) host the Lodebook privacy policy at `https://wilmoth.engineering/lodebook/privacy`. Support is `lodebook/support/` and `lodebook/support.html` (`https://wilmoth.engineering/lodebook/support`). Caddy resolves both the flat file and the directory index, same as CANnery.
+
 `privacy.html` and `terms.html` reproduce the Doodle A Day privacy policy
 and terms of service **verbatim** — the App Store listing links directly
 to these URLs, so the paths (`/privacy.html`, `/terms.html`) and the
