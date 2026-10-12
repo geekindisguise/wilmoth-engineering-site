@@ -1,6 +1,6 @@
 FROM caddy:2-alpine
 COPY Caddyfile /etc/caddy/Caddyfile
-COPY index.html privacy.html terms.html app-ads.txt /usr/share/caddy/
+COPY index.html privacy.html terms.html app-ads.txt favicon.ico favicon.svg /usr/share/caddy/
 COPY css /usr/share/caddy/css
 COPY js /usr/share/caddy/js
 COPY assets /usr/share/caddy/assets
