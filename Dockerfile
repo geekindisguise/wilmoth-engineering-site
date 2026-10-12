@@ -6,3 +6,4 @@ COPY js /usr/share/caddy/js
 COPY assets /usr/share/caddy/assets
 COPY cannery /usr/share/caddy/cannery
 COPY lodebook /usr/share/caddy/lodebook
+COPY snap-and-wind /usr/share/caddy/snap-and-wind
