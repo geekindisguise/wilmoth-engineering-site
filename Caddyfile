@@ -16,6 +16,8 @@
 	}
 	root * /usr/share/caddy
 	encode gzip
+	@reviewdemo path /snap-and-wind/review-demo.mp4
+	header @reviewdemo X-Robots-Tag "noindex, nofollow, noarchive"
 	try_files {path} {path}.html {path}/index.html
 	file_server
 }
