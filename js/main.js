@@ -70,7 +70,7 @@ var PROJECTS = [
     accent: 'cyan',
     gradient: 'linear-gradient(135deg, #0F1D24, #12333A 60%, #46E4D31A)',
     glyph: 'Firmware · PCB',
-    description: 'A ground-up EV charging controller built to the J1772 standard — pilot signaling, relay control, and safety interlocks on custom hardware. Prototype proven, telematics features in progress.',
+    description: 'A ground-up EV charging controller built to the J1772 standard — pilot signaling, relay control, and safety interlocks on custom hardware. Prototype proven, tested on Rosie.',
     tags: ['Embedded C', 'Power Electronics', 'CAD'],
     links: [
       { label: 'Project log', href: '#contact' }
