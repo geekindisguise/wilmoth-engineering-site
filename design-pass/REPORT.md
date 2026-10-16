@@ -18,6 +18,85 @@ there (it serves a page titled "Bot Command Center"). I left it alone and used
 (`try_files {path} {path}.html {path}/index.html`), so legacy URLs behave
 locally the way they do in production.
 
+## Revision 1 (your five fixes)
+
+All five are done and committed on this branch. Nothing was pushed or deployed.
+
+1. **Contactors, plural.** The drawing now has both main contactors: **K1
+   on HV+** (with the precharge resistor R3 across it) and **K2 on HV−**, on
+   separate positive and negative runs from the pack to the controller.
+   They follow the usual sequence:
+   - **Step 3 (Precharge):** K2 closes first, then R3 brings the DC link up.
+   - **Step 4 ("Contactors closed"):** K1 closes, so both sides are connected.
+
+   This works the same in the SVG and the 3D views. The readout cell is now
+   "Contactors", reading Open, then K2 closed · precharging, then K1 + K2
+   closed. The parts key lists K1 and K2 separately.
+2. **Rosie and Wall-E.**
+   - **Rosie** (1978 Beetle) is described as the test bed for the J1772
+     charge controller. The J1772 controller row and hero step 6 both say it
+     is tested on Rosie.
+   - **Wall-E** (1996 Outback) is the test bed for the new custom dashboard
+     and telematics.
+   - **Everywhere:** Rosie no longer mentions dashboards or telematics
+     anywhere, including the About copy and the unused `js/main.js`, which
+     still ships.
+3. **Only CANnery and Doodle A Day are public.** Lodebook, Snap & Wind and
+   Keepsake are now `draft: true` in `content/apps.mjs`. Draft apps get no
+   `/apps/<slug>/` pages, no home or `/apps/` listing, no footer link, no
+   sitemap entry, and no mention on the Off the bench notes. I grepped every
+   file that ships; see "Drafts" below for the one deliberate exception and
+   why.
+4. **Apps layout.** The card grid is now two **detail views on a drawing
+   sheet**. Each app has:
+   - a lettered detail balloon (A, B) with a leader to a dashed detail circle
+     with centre lines;
+   - its icon at large size inside the circle, captioned "Detail A · Mac &
+     iPad";
+   - numbered drawing notes for what it does;
+   - a document schedule listing each document's address;
+   - the App Store link, where one exists.
+
+   CANnery cross-references "Drawn as U6 on the system drawing", which is
+   true: it is U6 in the hero. With two apps, the two details split the sheet
+   down the middle. A third app would span a full row, so the layout never
+   leaves a hole. It uses the same component on the home page and `/apps/`.
+5. **Hero first line** is now "Jacob Wilmoth, electrical engineer". It
+   fits on one line at 320, 390 and 1440 px (measured). `<title>` is "Jacob
+   Wilmoth, electrical engineer | Wilmoth Engineering".
+
+### Drafts: what is and isn't reachable
+
+| URL | Now |
+|---|---|
+| `/apps/lodebook/…`, `/apps/snap-and-wind/…`, `/apps/keepsake/` | not generated, not shipped (404) |
+| home, `/apps/`, footer, sitemap, Off the bench | only CANnery and Doodle A Day |
+| `/lodebook/privacy`, `/lodebook/support`, `/snap-and-wind/privacy`, `/terms`, `/support` (+ `.html`, `/`), `/snap-and-wind/review-demo.mp4` | **still 200**, unlisted: nothing links to them, `noindex`, not in the sitemap, and their rail links only to each other |
+| `/drafts/apps/<slug>/` | full draft preview, **local only** (`drafts/` is never copied into the image) |
+
+**Why the old Lodebook and Snap & Wind URLs still work:**
+- The original brief marks every existing privacy, terms and support URL as
+  linked from App Store Connect, and says to keep them all working.
+- Snap & Wind has an App Review demo on the site.
+- Before this redesign, those pages were already live at those addresses and
+  unlinked. They now have exactly that unlisted status again.
+
+Removing them could break App Review or a submitted listing. If you'd rather
+they 404 too, delete the `legacy` entries for those docs in
+`content/apps.mjs`, rebuild, and remove the Dockerfile's
+`COPY lodebook` / `COPY snap-and-wind` lines.
+
+**One cleanup only you can do:**
+- The old generated `apps/lodebook/` and `apps/snap-and-wind/` folders are
+  still in the tree. I'm not allowed to delete files, and `git mv` was
+  blocked in this session.
+- They are stale and harmless: `tools/build.mjs` writes a block into
+  `.dockerignore` that excludes every draft's `apps/<slug>` folder (and
+  `drafts/`) from the image, and the local preview server returns 404 for
+  them too.
+- The build prints a reminder until you run
+  `git rm -r apps/lodebook apps/snap-and-wind`.
+
 ## The idea
 
 You said the circuits didn't make sense and the site looked like AI slop. So
@@ -25,19 +104,21 @@ the circuit is now a **real system you'd find in one of your cars**, and the
 site around it is a **drawing sheet** instead of a dark tech template.
 
 - **The hero is a single-line diagram of a typical EV conversion.** J1772
-  inlet → on-board charger → pack (4 modules) + BMS → main contactor with a
-  precharge resistor → motor controller → three-phase motor, plus a DC-DC
+  inlet → on-board charger → pack (4 modules) + BMS → main contactors on
+  HV+ (K1, with a precharge resistor across it) and HV− (K2) → motor
+  controller → three-phase motor, plus a DC-DC
   converter, 12 V battery, and a CAN trunk terminated with 120 Ω at each end.
   CANnery and the dash tap the bus. Every part has a reference designator
-  (J1, U3, BT1, K1, R3, U2, M1…).
+  (J1, U3, BT1, K1, K2, R3, U2, M1…).
 - **Scrolling walks through the actual startup sequence:** 12 V wake → BMS
-  checks the pack → precharge → main contactor closes → drive → plug in
-  (J1772 pilot) → read every frame in CANnery. Each step changes what's live.
-  The DC link ramps during precharge, K1's plunger drops when it closes, the
+  checks the pack → K2 closes and precharge → K1 closes (contactors closed) →
+  drive → plug in (J1772 pilot) → read every frame in CANnery. Each step
+  changes what's live. The DC link ramps during precharge, each contactor's
+  plunger drops as it closes, the
   rotor turns only while driving, and the pack fills while charging.
 - **CAN behaves like CAN.** A frame goes down the sender's stub, then both ways
   along the trunk to every node. Receivers blink. An instrument strip shows
-  12 V / K1 / DC link / motor / J1772 / bus frames per second, next to a live
+  12 V / contactors / DC link / motor / J1772 / bus frames per second, next to a live
   bus trace. The trace is labelled "illustrative" because the message names
   are generic, not your DBC.
 - **Colour means what it means on a wiring diagram:** orange is high voltage
@@ -76,17 +157,17 @@ site around it is a **drawing sheet** instead of a dark tech template.
 
 Facts come only from the repo and the brief:
 
-- **EV and vehicle electronics**: the hero system; Rosie (1978 Beetle) and
-  Wall-E (1996 Outback); the J1772 controller; EV Engineering Lab
+- **EV and vehicle electronics**: the hero system; Rosie (1978 Beetle, the
+  J1772 charge-controller test bed) and Wall-E (1996 Outback, the new
+  dashboard and telematics test bed); the J1772 controller; EV Engineering Lab
   (evengineeringlab.com, a link only, since the repo says nothing else about
   it); consulting.
-- **Apps**: CANnery, Lodebook, Snap & Wind and Doodle A Day, each with a
+- **Apps**: CANnery and Doodle A Day (the released ones), each with a
   landing page whose facts come from its own privacy and support copy.
-  Keepsake is listed as "Page not published yet".
+  Lodebook, Snap & Wind and Keepsake are drafts and appear nowhere public.
 - **Off the bench**: photography (your existing photo, linking to
   jacobwilmoth.com), mountain biking in the Colorado mountains, prospecting
-  and geology (linked to Lodebook), and a Proxmox homelab with self-hosted
-  services.
+  and geology, and a Proxmox homelab with self-hosted services.
 
 ## Structure proposal (implemented)
 
@@ -127,14 +208,17 @@ and returned 200.
 | `/terms.html` | `/apps/doodle-a-day/terms` |
 | `/cannery/privacy` · `/cannery/privacy.html` · `/cannery/privacy/` | `/apps/cannery/privacy` |
 | `/cannery/support` · `/cannery/support.html` · `/cannery/support/` | `/apps/cannery/support` |
-| `/lodebook/privacy` · `.html` · `/` | `/apps/lodebook/privacy` |
-| `/lodebook/support` · `.html` · `/` | `/apps/lodebook/support` |
-| `/snap-and-wind/privacy` · `.html` · `/` | `/apps/snap-and-wind/privacy` |
-| `/snap-and-wind/terms` · `.html` · `/` | `/apps/snap-and-wind/terms` |
-| `/snap-and-wind/support` · `.html` · `/` | `/apps/snap-and-wind/support` |
+| `/lodebook/privacy` · `.html` · `/` | none: draft (unlisted, `noindex`) |
+| `/lodebook/support` · `.html` · `/` | none: draft (unlisted, `noindex`) |
+| `/snap-and-wind/privacy` · `.html` · `/` | none: draft (unlisted, `noindex`) |
+| `/snap-and-wind/terms` · `.html` · `/` | none: draft (unlisted, `noindex`) |
+| `/snap-and-wind/support` · `.html` · `/` | none: draft (unlisted, `noindex`) |
 | `/snap-and-wind/review-demo.mp4` | unchanged (still `X-Robots-Tag: noindex`) |
 | `/app-ads.txt` | unchanged |
-| — | `/apps/`, `/apps/<slug>/` (new), `/sitemap.xml` (new) |
+| — | `/apps/`, `/apps/cannery/`, `/apps/doodle-a-day/` (new), `/sitemap.xml` (new) |
+
+After revision 1 the URL check covers 49 URLs: every old and new URL above
+returns 200, and the eight `/apps/` URLs for the draft apps return 404.
 
 You don't have to change anything in App Store Connect. When you next touch a
 listing, you can switch it to the `/apps/...` URL.
@@ -143,13 +227,13 @@ listing, you can switch it to the `/apps/...` URL.
 
 | Area | Change |
 |---|---|
-| Home | New hero (system drawing + 7 steps), parts-list Work, apps shelf, Off the bench, datasheet About, contact, title-block footer |
-| Legal/support pages | Shared layout: app rail with Overview / Privacy / Terms / Support tabs and the page address; same verbatim copy |
-| App pages | New `/apps/` index and landing pages for CANnery, Lodebook, Snap & Wind, Doodle A Day |
+| Home | New hero (system drawing + 7 steps), parts-list Work, apps as detail views, Off the bench, datasheet About, contact, title-block footer |
+| Legal/support pages | Shared layout: app rail with Overview / Privacy / Terms / Support tabs and the page address; same verbatim copy. Draft apps' legacy pages: same layout without an Overview, `noindex` |
+| App pages | New `/apps/` index and landing pages for CANnery and Doodle A Day; local-only draft previews for Lodebook and Snap & Wind under `/drafts/apps/` |
 | Navigation | Same header on every page: System, Work, Apps, Off the bench, Contact. On phones it becomes a second scrolling row, so it needs no hamburger and no script |
 | Footer | App directory with each app's privacy/terms/support links (the old footer pointed "Privacy/Terms" at Doodle from every page) |
 | Copy | Hero, section intros and the About datasheet rewritten in plain language. Removed "Operating temp: comfortable under deadline pressure"; dropped the "Project log" links that went to #contact and the generic `apps.apple.com` link for Doodle |
-| Deploy | Dockerfile also copies `apps/` and `sitemap.xml`. Caddyfile unchanged |
+| Deploy | Dockerfile also copies `apps/` and `sitemap.xml`. `.dockerignore` gains a generated block excluding `drafts/` and each draft's `apps/<slug>`. Caddyfile unchanged |
 | Docs | README rewritten for the new layout and workflow |
 
 ### Yesterday's five fixes (`design/claude-opus-pass-2026-10-14`)
@@ -174,6 +258,8 @@ layout rather than patched on.
 - `design-pass/before/`: the original site, 10 pages × desktop 1440 and
   mobile 390, viewport + full page.
 - `design-pass/after/`: the same filenames, plus `apps-index`, `app-*`.
+  Re-shot after revision 1. `app-lodebook-*` and `app-snapwind-*` now show
+  the local draft previews, with the "Draft · not published" flag.
 - `design-pass/after/hero-steps/`: every scroll step on desktop (three.js) and
   mobile (SVG), plus `*-dark`.
 - `design-pass/after/reduced-motion/`: the static schematic.
@@ -193,10 +279,10 @@ used.
 - **Not tested on a real phone or in Safari.** Everything was verified in
   headless Chromium only. Worth a look on your iPhone over Tailscale. The CSS
   uses `color-mix()` (Safari 16.2+) and the individual `translate` property.
-- **Missing facts I didn't invent:** App Store URLs for Doodle, Lodebook and
-  Snap & Wind (their landing pages have no store button), anything about
-  Keepsake, and what EV Engineering Lab is (it has a one-line row and a link).
-  Add them to `content/apps.mjs` or `index.html`.
+- **Missing facts I didn't invent:** Doodle A Day's App Store URL (its
+  detail and landing page have no store button), and what EV Engineering Lab
+  is (it has a one-line row and a link). Add an `appStore` URL to Doodle's
+  entry in `content/apps.mjs`, and edit `index.html` for EV Engineering Lab.
 - **The photo**: a mountain-bike shot from your portfolio. I didn't caption
   the rider or location because the repo doesn't say who or where.
 - **The 3D part names are hover-only**, with a native tooltip in the SVG. The
@@ -222,6 +308,10 @@ Hero: no cropping push-ins, parts key, readout; README for new layout
 Hero: drop camera push-ins; wider parts key under reduced motion
 after screenshots
 REPORT.md
+— revision 1 —
+Hero: drop brand from first line so Jacob's name fits on one line
+Hero: positive and negative main contactors (K1, K2); Rosie/Wall-E copy
+Apps: only released apps are public (drafts unlisted); detail-view layout; REPORT
 ```
 
 `CLAUDE-DESIGN-PASS.md` is left untracked, as I found it. There is no
