@@ -79,6 +79,7 @@ const appUrl = app => `/apps/${app.slug}/`;
 // Display form of a URL: lets long paths wrap at slashes, not mid-word.
 const shownUrl = path => `wilmoth.engineering${path}`.replace(/\//g, '/<wbr>');
 const docUrl = (app, d) => `/apps/${app.slug}/${d}`;
+const docTitle = (app, d) => app.docs[d].title || DOC_TITLES[d];
 
 function appIcon(app, size = 56) {
   if (app.icon) return `<img class="app-icon" src="${app.icon}" alt="" width="${size}" height="${size}" loading="lazy" decoding="async">`;
@@ -122,9 +123,9 @@ function footer() {
 
 function docPage(app, d, { legacyOf } = {}) {
   const fragment = readFileSync(join(ROOT, 'content/apps', app.slug, `${d}.html`), 'utf8');
-  const title = `${DOC_TITLES[d]} — ${app.name} | Wilmoth Engineering`;
+  const title = `${docTitle(app, d)} — ${app.name} | Wilmoth Engineering`;
   const tabs = [`<li><a href="${appUrl(app)}">Overview</a></li>`]
-    .concat(docsOf(app).map(x => `<li><a href="${docUrl(app, x)}"${x === d ? ' aria-current="page"' : ''}>${DOC_TITLES[x]}</a></li>`))
+    .concat(docsOf(app).map(x => `<li><a href="${docUrl(app, x)}"${x === d ? ' aria-current="page"' : ''}>${docTitle(app, x)}</a></li>`))
     .join('\n          ');
   return `${head({ title, canonical: docUrl(app, d) })}
 <body class="page-doc">
@@ -185,7 +186,7 @@ ${header('apps')}
   <section class="app-docs" aria-labelledby="docs-h">
     <h2 id="docs-h" class="cell-label">Documents</h2>
     <ul class="doc-cards">
-      ${docs.map(d => `<li><a href="${docUrl(app, d)}"><span class="doc-card-title">${DOC_TITLES[d]}</span><span class="doc-card-url mono">${shownUrl(docUrl(app, d))}</span></a></li>`).join('\n      ')}
+      ${docs.map(d => `<li><a href="${docUrl(app, d)}"><span class="doc-card-title">${docTitle(app, d)}</span><span class="doc-card-url mono">${shownUrl(docUrl(app, d))}</span></a></li>`).join('\n      ')}
     </ul>
   </section>
 </main>

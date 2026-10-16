@@ -22,10 +22,8 @@ const TYPES = {
   '.txt': 'text/plain; charset=utf-8', '.ico': 'image/x-icon', '.woff2': 'font/woff2',
 };
 
-// Keep in sync with the `redir` lines in Caddyfile.
-const REDIRECTS = {
-  '/apps': '/apps/',
-};
+// Keep in sync with any `redir` lines in Caddyfile (none today).
+const REDIRECTS = {};
 
 const BLOCKED = /^\/(\.git|tools|content|design-pass|node_modules)(\/|$)|\.md$/;
 

@@ -12,6 +12,7 @@
 // content/apps/<slug>/, run `node tools/build.mjs`, commit the output.
 // The doc's canonical URL is /apps/<slug>/<doc>; point App Store Connect there.
 
+// Default document names; an app's doc can override with `title`.
 export const DOC_TITLES = {
   privacy: 'Privacy Policy',
   terms: 'Terms',
@@ -24,7 +25,7 @@ export const APPS = [
     name: 'CANnery',
     platforms: 'Mac & iPad',
     kind: 'CAN bus analyzer',
-    icon: '/assets/CANnery_Icon_Dock_Light.png',
+    icon: '/assets/cannery-icon-256.png', // 256px copy of CANnery_Icon_Dock_Light.png
     accent: 'hv',
     summary: 'A native CAN bus analyzer for Mac and iPad. Import ASC, BLF or CSV logs, load DBC files, and read every decoded signal as a chart or a raw trace.',
     // Lines sourced from the CANnery privacy and support pages.
@@ -76,7 +77,7 @@ export const APPS = [
     ],
     docs: {
       privacy: { legacy: ['/snap-and-wind/privacy.html', '/snap-and-wind/privacy/index.html'] },
-      terms: { legacy: ['/snap-and-wind/terms.html', '/snap-and-wind/terms/index.html'] },
+      terms: { title: 'Terms of Use', legacy: ['/snap-and-wind/terms.html', '/snap-and-wind/terms/index.html'] },
       support: { legacy: ['/snap-and-wind/support.html', '/snap-and-wind/support/index.html'] },
     },
   },
@@ -85,7 +86,7 @@ export const APPS = [
     name: 'Doodle A Day',
     platforms: 'iPhone',
     kind: 'Doodle & mood journal',
-    icon: '/assets/DoodleADay-AppIcon-1024.png',
+    icon: '/assets/doodle-a-day-icon-256.png', // 256px copy of DoodleADay-AppIcon-1024.png
     accent: 'pencil',
     summary: 'A daily doodling and mood journal for iPhone. One prompt a day, one quick sketch, a running visual diary of how you’ve been feeling.',
     // Lines sourced from the Doodle A Day privacy policy and terms.
@@ -97,7 +98,7 @@ export const APPS = [
     docs: {
       // The original App Store URLs for Doodle are at the site root.
       privacy: { legacy: ['/privacy.html'] },
-      terms: { legacy: ['/terms.html'] },
+      terms: { title: 'Terms of Service', legacy: ['/terms.html'] },
     },
   },
   {
