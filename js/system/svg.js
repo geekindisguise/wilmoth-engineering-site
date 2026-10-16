@@ -95,15 +95,14 @@ export function createSchematic(container) {
       if (c.type === 'board') for (let i = 0; i < 3; i++) el('rect', { x: x + 0.35 + i * 0.75, y: c.z - 0.12, width: 0.4, height: 0.24, rx: 0.02, class: 'chip' }, g);
       if (c.type === 'battery12') el('path', { d: `M${c.x - 0.08} ${c.z - 0.16} v0.32 M${c.x + 0.08} ${c.z - 0.08} v0.16`, class: 'sym-line' }, g);
     }
-    // Reference designator, plus the plain name where there's room.
+    // Reference designator on the drawing; names go in the parts key.
+    el('title', {}, g).textContent = `${c.id} · ${c.name}`;
     const ly = c.type === 'laptop' || c.type === 'screen' ? c.z + c.d / 2 + 0.34
       : c.id === 'R1' || c.id === 'R2' ? c.z + 0.52
       : c.id === 'U1' ? c.z + 0.08
       : c.z - (c.type === 'motor' || c.type === 'inlet' ? c.d / 2 : c.d / 2) - 0.12;
     const t = el('text', { x: c.x, y: ly, class: 'ref' }, g);
     t.textContent = c.id;
-    const nm = el('tspan', { class: 'ref-name', dx: 0.12 }, t);
-    nm.textContent = c.name;
     if (c.id in TAP_X) rxEls[c.id] = g;
     cmpEls[c.id] = g;
   }
@@ -112,6 +111,19 @@ export function createSchematic(container) {
   for (let i = 0; i < 48; i++) pool.push(el('rect', { width: 0.24, height: 0.13, rx: 0.065, class: 'frame', x: -99, y: -99 }, gPk));
 
   container.appendChild(svg);
+
+  // Parts key, like the one on a drawing sheet. Shown where the bus trace
+  // would be when the trace isn't running (reduced motion).
+  const instruments = container.parentElement.querySelector('.system-instruments');
+  let key = null;
+  if (instruments) {
+    key = document.createElement('ol');
+    key.className = 'parts-key';
+    const seen = new Set();
+    key.innerHTML = COMPONENTS.filter(c => !seen.has(c.name) && seen.add(c.name))
+      .map(c => `<li><b>${c.id === 'R1' ? 'R1, R2' : c.id}</b>${c.name}</li>`).join('');
+    instruments.appendChild(key);
+  }
 
   let lastRx = {};
   return {
@@ -145,6 +157,6 @@ export function createSchematic(container) {
         if (on !== lastRx[id]) { rxEls[id].classList.toggle('is-rx', on); lastRx[id] = on; }
       }
     },
-    destroy() { svg.remove(); },
+    destroy() { svg.remove(); if (key) key.remove(); },
   };
 }

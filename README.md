@@ -1,92 +1,105 @@
 # wilmoth.engineering
 
-Static portfolio site for Jacob Wilmoth — electrical engineer and visual
-storyteller. Plain HTML/CSS/JS, no build step, no framework. Serve the
-folder as-is behind Caddy (or any static file server).
+Static site for Wilmoth Engineering, LLC (Jacob Wilmoth). Plain HTML, CSS
+and JavaScript modules. The deployed site has no build step; a small Node
+script (no dependencies) generates the app pages, and its output is committed.
 
 ## Structure
 
 ```
-index.html        Home page: hero, about, work, contact
-privacy.html       Doodle A Day privacy policy (verbatim legal text — do not reword)
-terms.html         Doodle A Day terms of service (verbatim legal text — do not reword)
-css/style.css      All styles (design tokens live at the top as CSS custom properties)
-js/circuit.js      Hero canvas — the interactive "live circuit board" (signature element)
-js/main.js         Project data + rendering, scroll reveals, mobile nav, card tilt
-assets/            Drop real photos/screenshots here as projects get real media
+index.html              Home: system hero, work, apps, off the bench, about, contact
+css/style.css           All styles; design tokens at the top (light + dark)
+js/system/              The hero drawing
+  graph.js              The EV system: parts, nets, scroll states (single source)
+  bus.js                CAN traffic: frames broadcast from each sender
+  svg.js                2D schematic renderer (phones, reduced motion, no WebGL)
+  scene.js              three.js renderer (desktop only, lazy-loaded)
+  index.js              Picks a renderer, maps scroll steps to states
+js/vendor/three.js      Minified three.js subset (tools/vendor-three.mjs)
+content/apps.mjs        Per-app data: name, platforms, facts, docs, legacy URLs
+content/apps/<slug>/    Verbatim legal/support copy: privacy.html, terms.html, support.html
+apps/                   GENERATED: /apps/, /apps/<slug>/, /apps/<slug>/<doc>/
+privacy.html, terms.html, cannery/, lodebook/, snap-and-wind/
+                        GENERATED legacy URLs (App Store links). Do not hand-edit.
+tools/build.mjs         Generates the above + header/apps/footer inside index.html
+tools/check-legal.mjs   Fails if any legal text or link target drifted
+tools/serve.mjs         Local preview that resolves paths exactly like the Caddyfile
 ```
 
-Everything is self-contained static files. Open `index.html` directly in a
-browser, or drop the whole folder on any static host / Caddy `file_server`.
-The only external network dependency is the Google Fonts stylesheet link
-(Space Grotesk, JetBrains Mono, Inter) in the `<head>` of each page — swap
-that for self-hosted font files if the deploy target has no internet egress.
+## Everyday commands
 
-## Design direction
-
-Dark, PCB-inspired base with two accent colors that carry meaning rather
-than being decorative:
-
-- **Cyan (`--cyan`, `#46E4D3`)** — the engineering register: circuits, specs,
-  consulting.
-- **Amber (`--amber`, `#FF9A4D`)** — the creative register: photography,
-  cinematography, the shipped app.
-
-The hero is a live canvas circuit board (`js/circuit.js`): current drifts
-along traces on its own, the cursor pulls nearby current toward it, and
-clicking a node fires a bright cascade down connected traces ("energizing
-the board"). It's the one deliberately showy element on the page — every­
-thing else (reveal-on-scroll, card tilt, nav) is quieter by design.
-
-The About section is styled as a component datasheet (spec-sheet table) —
-a small, on-brand joke about describing a person the way you'd describe a
-part.
-
-All motion respects `prefers-reduced-motion`: the canvas doesn't mount at
-all (a static gradient grid takes its place), scroll reveals show content
-immediately, and the blinking cursor / card tilt are disabled.
-
-## Adding a new project
-
-Open `js/main.js` and add an object to the `PROJECTS` array at the top of
-the file. Each object needs:
-
-```js
-{
-  id: 'unique-slug',
-  title: 'Project Name',
-  category: 'Short label shown above the title',
-  accent: 'cyan' | 'amber',
-  gradient: 'CSS background, e.g. linear-gradient(...)',
-  glyph: 'short mono tag shown on the card image, e.g. "iOS · SwiftUI"',
-  description: 'One or two sentences.',
-  tags: ['Tech', 'Skills', 'Here'],
-  links: [
-    { label: 'Link text', href: 'https://...', external: true }, // external adds target=_blank
-    { label: 'Another link', href: '#contact' }
-  ]
-}
+```sh
+node tools/build.mjs          # regenerate app pages after editing content/
+node tools/build.mjs --check  # CI-style: exit 1 if generated files are stale
+node tools/check-legal.mjs    # legal copy still matches the pre-overhaul pages
+node tools/serve.mjs 8789     # preview on http://0.0.0.0:8789/
 ```
 
-To use a real photo instead of a gradient placeholder, add an `image:
-'assets/your-file.jpg'` field — it renders behind the gradient as a cover
-image. No other file needs to change; the grid renders straight from this
-array, in order.
+## Adding an app
+
+1. Add an entry to `APPS` in `content/apps.mjs` (slug, name, platforms, kind,
+   icon or monogram, summary, facts, docs).
+2. Put its documents in `content/apps/<slug>/privacy.html` (and `terms.html`,
+   `support.html` as needed). These are the `<main>` body only.
+3. `node tools/build.mjs`, then commit the generated `apps/<slug>/` files.
+4. In App Store Connect use `https://wilmoth.engineering/apps/<slug>/privacy`
+   (and `/terms`, `/support`).
+
+New apps need no legacy URLs and no Dockerfile change: everything lives under
+`apps/`, which the Dockerfile already copies.
 
 ## Legal pages
 
-`cannery/privacy/` (and `cannery/privacy.html`) host the CANnery privacy policy **verbatim** from the app (`docs/privacy.md` / in-app Help). App Store Connect and the in-app link use `https://wilmoth.engineering/cannery/privacy`. Do not reword. Doodle stays at `/privacy.html` and `/terms.html`.
+Legal and support copy is reproduced **verbatim** from each app. Do not
+reword it. It lives in `content/apps/<slug>/*.html`; the layout around it
+(header, document rail, footer) is shared and can change freely.
 
-`lodebook/privacy/` (and `lodebook/privacy.html`) host the Lodebook privacy policy at `https://wilmoth.engineering/lodebook/privacy`. Support is `lodebook/support/` and `lodebook/support.html` (`https://wilmoth.engineering/lodebook/support`). Caddy resolves both the flat file and the directory index, same as CANnery.
+Every URL that App Store listings or the apps already link to still returns
+the page with a 200, with a `<link rel="canonical">` pointing at the new
+`/apps/...` address:
 
-`privacy.html` and `terms.html` reproduce the Doodle A Day privacy policy
-and terms of service **verbatim** — the App Store listing links directly
-to these URLs, so the paths (`/privacy.html`, `/terms.html`) and the
-wording must not change. Restyle the surrounding header/footer chrome
-freely; leave the legal copy itself untouched.
+| Old URL (still live) | Canonical |
+|---|---|
+| `/privacy.html` | `/apps/doodle-a-day/privacy` |
+| `/terms.html` | `/apps/doodle-a-day/terms` |
+| `/cannery/privacy`, `/cannery/privacy.html`, `/cannery/privacy/` | `/apps/cannery/privacy` |
+| `/cannery/support` (+ `.html`, `/`) | `/apps/cannery/support` |
+| `/lodebook/privacy` (+ `.html`, `/`) | `/apps/lodebook/privacy` |
+| `/lodebook/support` (+ `.html`, `/`) | `/apps/lodebook/support` |
+| `/snap-and-wind/privacy` (+ `.html`, `/`) | `/apps/snap-and-wind/privacy` |
+| `/snap-and-wind/terms` (+ `.html`, `/`) | `/apps/snap-and-wind/terms` |
+| `/snap-and-wind/support` (+ `.html`, `/`) | `/apps/snap-and-wind/support` |
 
+`/snap-and-wind/review-demo.mp4` is unchanged and still served `noindex`.
+
+## Design
+
+A drawing sheet rather than a dark "tech" template. Light drafting paper by
+default; dark follows the OS. Colour means what it means on a wiring diagram:
+**orange is high voltage** (as HV cabling is in every EV), **blue is CAN /
+signal**, ink is 12 V and linework. Type is Archivo (display and text, using
+its width axis) and IBM Plex Mono (annotations).
+
+The hero is a single-line diagram of a typical EV conversion, drawn from
+`js/system/graph.js`. Scrolling walks through a real startup sequence
+(12 V wake, BMS check, precharge, main contactor, drive, J1772 charge, reading
+the bus in CANnery). CAN frames are broadcast the way CAN works: down the
+sender's stub, then both ways along a trunk terminated with 120 Ω at each end.
+Message names in the bus trace are illustrative, and labelled that way.
+
+Performance and accessibility:
+
+- three.js loads only on wide, fine-pointer screens with WebGL, after idle,
+  and without Save-Data. Phones get the SVG (about 24 KB of JS).
+- `prefers-reduced-motion`: static SVG, every step readable, nothing animates.
+- The render loop stops when the hero is off screen or the tab is hidden.
+- The drawing is `aria-hidden`; the steps carry the same information as text.
+
+To change which three.js classes are bundled, edit `NAMES` in
+`tools/vendor-three.mjs` and rerun it (instructions at the top of the file).
 
 ## Hosting
 
-Live on Railway (`wilmoth-engineering`). Apex is `wilmoth.engineering`.
-Do not serve `luke/` (local only). Home Caddy is no longer the origin for this site.
+Live on Railway (`wilmoth-engineering`), served by Caddy (see `Caddyfile`,
+`Dockerfile`). Apex is `wilmoth.engineering`. `content/`, `tools/` and
+`design-pass/` are not copied into the image. Do not serve `luke/` (local only).

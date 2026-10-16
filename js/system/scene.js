@@ -431,8 +431,11 @@ export async function createScene(container) {
     placeCamera();
   }
 
+  // The drawing fills the panel edge to edge, so any zoom crops something.
+  // Groups of parts are emphasised by dimming the rest; only a single part
+  // (the CANnery finale) gets a push-in.
   function focusOn(ids) {
-    if (!ids.length) { goal.target.copy(baseTarget); goal.zoom = 1; return; }
+    if (ids.length !== 1) { goal.target.copy(baseTarget); goal.zoom = 1; return; }
     const box = new T.Box3();
     for (const id of ids) {
       const c = cmp[id].c;
@@ -442,7 +445,7 @@ export async function createScene(container) {
     const delta = box.getCenter(new T.Vector3()).sub(baseTarget);
     // Gentle push-in, and never further than the zoom frees up, so every
     // part of the system stays in frame.
-    goal.zoom = ids.length === 1 ? 1.18 : 1.1;
+    goal.zoom = 1.16;
     const right = new T.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
     const up = new T.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
     const room = 1 - 1 / goal.zoom;

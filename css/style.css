@@ -342,8 +342,16 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .switch { transform-box: fill-box; transform-origin: 0 100%; transition: transform .35s var(--ease); }
 .contactor-closed .switch { transform: rotate(40deg); }
 .ref { font-size: .25px; font-weight: 500; fill: var(--ink); text-anchor: middle; letter-spacing: .02em; }
-.ref-name { fill: var(--ink-3); font-weight: 400; display: none; }
-@media (min-width: 700px) { .ref-name { display: inline; } }
+.parts-key {
+  display: none; margin: 0; padding: 10px 12px; list-style: none;
+  columns: 2; column-gap: 14px;
+  font-family: var(--mono); font-size: .64rem; line-height: 1.7; color: var(--ink-2);
+  background: var(--paper); border: 1px solid var(--rule-2);
+}
+.parts-key li { break-inside: avoid; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.parts-key b { font-weight: 500; color: var(--ink); display: inline-block; min-width: 4.4em; }
+.still .parts-key { display: block; }
+.still .bus-trace { display: none; }
 .cmp.is-rx .body { stroke: var(--can); stroke-width: .05; }
 .has-focus .cmp:not(.is-focus) { opacity: .42; }
 .packets .frame { fill: var(--can); }
