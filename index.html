@@ -3,152 +3,372 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jacob Wilmoth — Electrical Engineer &amp; Visual Storyteller</title>
-<meta name="description" content="Wilmoth Engineering — EV conversion engineering, embedded hardware, iOS development, and cinematic photography by Jacob Wilmoth.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230B0E14%22/><path d=%22M20 50 L40 50 L48 30 L58 70 L68 50 L80 50%22 stroke=%22%2344E5D4%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+<title>Wilmoth Engineering — Jacob Wilmoth, electrical engineer</title>
+<meta name="description" content="Jacob Wilmoth converts old cars to electric and writes the software to see inside them: EV conversions, CAN bus tools, iPhone, iPad and Mac apps, and photography.">
+<link rel="canonical" href="https://wilmoth.engineering/">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f1ede4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121416" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%226%22%20fill%3D%22%2316181b%22%2F%3E%3Cpath%20d%3D%22M4%2016h8M20%2016h8M12%208v16M17%2012v8%22%20stroke%3D%22%23f1ede4%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%227%22%20r%3D%222.6%22%20fill%3D%22%23e2560b%22%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="modulepreload" href="/js/system/graph.js">
+<script>document.documentElement.classList.add('js');</script>
 </head>
-<body>
-
+<body class="page-home">
+<!-- build:header -->
 <a class="skip-link" href="#main">Skip to content</a>
-
-<header class="site-header" id="top">
-  <div class="wrap header-inner">
-    <a href="#top" class="brand" aria-label="Wilmoth Engineering — home">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 40 40" width="28" height="28">
-          <path d="M6 20 L14 20 L18 10 L24 30 L28 20 L34 20" stroke="currentColor" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="brand-text">Wilmoth<span class="brand-dot">.</span>Engineering</span>
-    </a>
-    <nav class="site-nav" aria-label="Primary">
-      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navList">
-        <span></span><span></span><span></span>
-        <span class="sr-only">Menu</span>
-      </button>
-      <ul class="nav-list" id="navList">
-        <li><a href="#work">Work</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <a href="/" class="brand" aria-label="Wilmoth Engineering, home"><svg class="brand-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><path d="M3 16h9M20 16h9M12 7v18M17 11v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="26" cy="7" r="2.4" class="brand-mark-dot"/></svg><span class="brand-name">Wilmoth Engineering</span></a>
+    <nav class="nav" aria-label="Primary">
+      <ul>
+        <li><a href="/#system">System</a></li>
+        <li><a href="/#work">Work</a></li>
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/#field">Off the bench</a></li>
+        <li><a href="/#contact">Contact</a></li>
       </ul>
     </nav>
   </div>
 </header>
+<!-- /build:header -->
 
 <main id="main">
 
-  <!-- ================= HERO ================= -->
-  <section class="hero" id="hero">
-    <canvas id="circuitCanvas" class="hero-canvas" aria-hidden="true"></canvas>
-    <div class="hero-fallback" aria-hidden="true"></div>
-    <div class="wrap hero-inner">
-      <p class="eyebrow mono">EE · <span class="accent-amber">Consultant</span> · Photographer</p>
-      <h1 class="hero-title">
-        <span class="line">Jacob</span>
-        <span class="line">Wilmoth<span class="cursor-blip" aria-hidden="true">_</span></span>
-      </h1>
-      <p class="hero-sub">
-        I design the circuits that move things, and I shoot the frames that move people.
-        Electrical engineering and visual craft, run out of one small studio.
-      </p>
-      <div class="hero-actions">
-        <a href="#work" class="btn btn-primary">See the work</a>
-        <a href="#contact" class="btn btn-ghost">Start a project</a>
+  <!-- ============ SYSTEM: the drawing is the hero ============ -->
+  <section class="system" id="system" aria-labelledby="hero-h">
+    <div class="system-art" id="systemArt">
+      <div class="system-viewport" id="systemViewport" aria-hidden="true">
+        <!-- js/system/svg.js draws the schematic here; js/system/scene.js
+             swaps in the three.js version on capable desktops. -->
       </div>
-      <p class="hero-hint mono" id="hint-text">click the board — energize it</p>
+      <div class="system-legend" aria-hidden="true">
+        <span class="lg lg-hv">High voltage DC</span>
+        <span class="lg lg-ac">AC</span>
+        <span class="lg lg-can">CAN bus</span>
+        <span class="lg lg-lv">12 V</span>
+        <span class="lg-note">Single-line diagram</span>
+      </div>
+      <div class="system-instruments" aria-hidden="true">
+        <dl class="readout" id="readout">
+          <div><dt>12 V</dt><dd data-r="lv">On</dd></div>
+          <div><dt>K1 contactor</dt><dd data-r="k1">Closed</dd></div>
+          <div><dt>DC link</dt><dd><span class="meter"><span data-r="dclink"></span></span></dd></div>
+          <div><dt>Motor</dt><dd data-r="motor">Driving</dd></div>
+          <div><dt>J1772</dt><dd data-r="evse">Unplugged</dd></div>
+          <div><dt>Bus</dt><dd data-r="fps">&mdash;</dd></div>
+        </dl>
+        <ol class="bus-trace" id="busTrace"></ol>
+      </div>
+    </div>
+
+    <div class="system-steps wrap">
+      <div class="step step-intro is-active" data-state="running">
+        <p class="kicker">Wilmoth Engineering · Jacob Wilmoth, electrical engineer</p>
+        <h1 id="hero-h">I convert old cars to electric, then write the software to see inside them.</h1>
+        <p class="lede">
+          Two daily-driven conversions, a J1772 charge controller on the bench,
+          apps for iPhone, iPad and Mac, and a camera along for all of it.
+        </p>
+        <p class="step-hint mono">This is a typical conversion, drawn live. Scroll to power it up.</p>
+      </div>
+
+      <div class="step" data-state="wake">
+        <p class="step-no mono">Step 1</p>
+        <h2>12 V wakes the bus</h2>
+        <p>Key on. The 12 V system wakes every controller, and each one starts talking on the CAN bus: two twisted wires with a 120&nbsp;&Omega; resistor at each end.</p>
+      </div>
+
+      <div class="step" data-state="bms">
+        <p class="step-no mono">Step 2</p>
+        <h2>The BMS checks the pack</h2>
+        <p>The battery management system reads every module and puts pack voltage, temperatures and state of charge on the bus as CAN frames.</p>
+      </div>
+
+      <div class="step" data-state="precharge">
+        <p class="step-no mono">Step 3</p>
+        <h2>Precharge</h2>
+        <p>Before the main contactor closes, a resistor charges the controller&rsquo;s capacitors slowly. Close it into an empty capacitor bank and the inrush can weld the contacts.</p>
+      </div>
+
+      <div class="step" data-state="contactors">
+        <p class="step-no mono">Step 4</p>
+        <h2>Main contactor closes</h2>
+        <p>With the DC link near pack voltage, the contactor closes. High voltage (orange, as it is in every EV) reaches the motor controller and the DC-DC converter that keeps the 12 V side charged.</p>
+      </div>
+
+      <div class="step" data-state="drive">
+        <p class="step-no mono">Step 5</p>
+        <h2>Drive</h2>
+        <p>The motor controller turns DC into three-phase AC for the motor, and reports speed and temperatures to the dash and telemetry.</p>
+      </div>
+
+      <div class="step" data-state="charge">
+        <p class="step-no mono">Step 6</p>
+        <h2>Plug in</h2>
+        <p>At a J1772 station, the control-pilot signal tells the charger how much current it may draw, and current flows back into the pack. I&rsquo;m building a J1772 controller from the ground up.</p>
+      </div>
+
+      <div class="step" data-state="cannery">
+        <p class="step-no mono">Step 7</p>
+        <h2>Read every frame</h2>
+        <p>Every frame on that bus can be opened in <a href="/apps/cannery/">CANnery</a>, the CAN analyzer I wrote for Mac and iPad: load a DBC, decode the signals, chart them.</p>
+        <p><a class="btn btn-line" href="#work">See the builds</a></p>
+      </div>
     </div>
   </section>
 
-  <!-- ================= ABOUT / DATASHEET ================= -->
-  <section class="section about" id="about">
-    <div class="wrap about-grid">
-      <div class="about-copy reveal">
-        <p class="eyebrow mono">01 — About</p>
-        <h2>Two disciplines, one signal.</h2>
-        <p>
-          I'm an electrical engineer by trade and a photographer by obsession. Days go to
-          load calculations, wiring harnesses, and firmware; the rest goes to lenses,
-          light, and motion. Wilmoth Engineering is where those two halves actually
-          talk to each other — EV conversions with dashboards worth looking at,
-          consulting work that gets documented like it matters, and a growing habit
-          of shooting the process along the way.
-        </p>
-        <p>
-          Based remotely, working with clients who need someone equally comfortable
-          in a schematic and behind a camera.
-        </p>
-      </div>
-
-      <div class="datasheet reveal" role="img" aria-label="Spec sheet styled biography of Jacob Wilmoth: Engineer and creative, remote-capable, EV conversions and embedded systems specialty.">
-        <div class="datasheet-head">
-          <span class="mono ds-part">PART NO. JMW&#8209;01</span>
-          <span class="mono ds-rev">REV C</span>
-        </div>
-        <h3 class="mono">JACOB WILMOTH</h3>
-        <table class="ds-table">
-          <tbody>
-            <tr><th>Type</th><td>Electrical Engineer / Visual Artist</td></tr>
-            <tr><th>Package</th><td>Remote, project or retainer</td></tr>
-            <tr><th>Core skills</th><td>EV conversion systems, embedded firmware, iOS apps</td></tr>
-            <tr><th>Creative output</th><td>Photography, cinematography</td></tr>
-            <tr><th>Operating temp</th><td>Comfortable under deadline pressure</td></tr>
-            <tr><th>Interfaces</th><td>Schematic, camera, code, client</td></tr>
-            <tr><th>Status</th><td><span class="ds-status">● ACTIVE</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= WORK ================= -->
-  <section class="section work" id="work">
+  <!-- ============ WORK: parts list ============ -->
+  <section class="section work" id="work" aria-labelledby="work-h">
     <div class="wrap">
-      <p class="eyebrow mono reveal">02 — Selected Work</p>
-      <h2 class="reveal">Projects that shipped, and rigs still on the bench.</h2>
-      <p class="section-sub reveal">
-        A running log of engineering builds, apps, and consulting work.
-        New projects get added here as they ship.
-      </p>
+      <header class="section-head">
+        <p class="kicker">Parts list</p>
+        <h2 id="work-h">On the bench</h2>
+        <p class="section-sub">Builds, hardware and consulting.</p>
+      </header>
 
-      <div class="project-grid" id="projectGrid">
-        <!-- injected by js/main.js from PROJECTS data -->
+      <ol class="bom">
+        <li class="bom-row">
+          <span class="balloon" aria-hidden="true">1</span>
+          <div class="bom-main">
+            <h3>Rosie</h3>
+            <p class="bom-spec mono">1978 VW Beetle · EV conversion · daily driver</p>
+          </div>
+          <p class="bom-desc">A daily-driven EV conversion. A custom dashboard and telematics make it a rolling data platform, not just a motor swap.</p>
+          <p class="bom-tags mono">Battery systems · CAN bus · Dashboards</p>
+        </li>
+        <li class="bom-row">
+          <span class="balloon" aria-hidden="true">2</span>
+          <div class="bom-main">
+            <h3>Wall-E</h3>
+            <p class="bom-spec mono">1996 Subaru Outback · EV conversion · daily driver</p>
+          </div>
+          <p class="bom-desc">The second daily-driven conversion, with the same approach: custom dashboard and telematics on top of the drivetrain.</p>
+          <p class="bom-tags mono">Battery systems · CAN bus · Telematics</p>
+        </li>
+        <li class="bom-row">
+          <span class="balloon" aria-hidden="true">3</span>
+          <div class="bom-main">
+            <h3>J1772 controller</h3>
+            <p class="bom-spec mono">Embedded hardware · prototype proven</p>
+          </div>
+          <p class="bom-desc">A ground-up EV charging controller built to the J1772 standard: pilot signaling, relay control and safety interlocks on custom hardware. Telematics features in progress.</p>
+          <p class="bom-tags mono">Embedded C · Power electronics · CAD</p>
+        </li>
+        <li class="bom-row">
+          <span class="balloon" aria-hidden="true">4</span>
+          <div class="bom-main">
+            <h3>EV Engineering Lab</h3>
+            <p class="bom-spec mono">evengineeringlab.com</p>
+          </div>
+          <p class="bom-desc">EV engineering, on its own site.</p>
+          <p class="bom-tags mono"><a href="https://evengineeringlab.com" rel="noopener">evengineeringlab.com &#8599;</a></p>
+        </li>
+        <li class="bom-row">
+          <span class="balloon" aria-hidden="true">5</span>
+          <div class="bom-main">
+            <h3>Engineering consulting</h3>
+            <p class="bom-spec mono">Wilmoth Engineering, LLC · remote · project or retainer</p>
+          </div>
+          <p class="bom-desc">EV conversion planning, off-grid and solar electrical systems, circuit design, and iOS or embedded development, as a specialist or a full build partner.</p>
+          <p class="bom-tags mono"><a href="#contact">Get in touch</a></p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ APPS ============ -->
+  <section class="section apps" id="apps" aria-labelledby="apps-h">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="kicker">Software</p>
+        <h2 id="apps-h">Apps</h2>
+        <p class="section-sub">Small, focused apps for iPhone, iPad and Mac. None of them need an account. <a href="/apps/">All apps, with privacy, terms and support</a>.</p>
+      </header>
+      <ul class="shelf">
+<!-- build:apps -->
+      <li class="shelf-item" data-accent="hv">
+        <a class="shelf-link" href="/apps/cannery/">
+          <img class="app-icon" src="/assets/CANnery_Icon_Dock_Light.png" alt="" width="64" height="64" loading="lazy" decoding="async">
+          <div class="shelf-text">
+            <h3 class="shelf-name">CANnery</h3>
+            <p class="shelf-kind">CAN bus analyzer · Mac &amp; iPad</p>
+            <p class="shelf-summary">A native CAN bus analyzer for Mac and iPad. Import ASC, BLF or CSV logs, load DBC files, and read every decoded signal as a chart or a raw trace.</p>
+          </div>
+        </a>
+        <p class="shelf-docs mono"><a href="/apps/cannery/privacy">privacy</a><a href="/apps/cannery/support">support</a></p>
+      </li>
+      <li class="shelf-item" data-accent="ore">
+        <a class="shelf-link" href="/apps/lodebook/">
+          <span class="app-icon app-icon--mono" data-accent="ore" data-len="2" style="--size:64px" aria-hidden="true">Lb</span>
+          <div class="shelf-text">
+            <h3 class="shelf-name">Lodebook</h3>
+            <p class="shelf-kind">Field notebook for mining claims · iPhone, iPad &amp; Mac</p>
+            <p class="shelf-summary">A field notebook for spots, finds, notes, and mining claims on iPhone, iPad, and Mac.</p>
+          </div>
+        </a>
+        <p class="shelf-docs mono"><a href="/apps/lodebook/privacy">privacy</a><a href="/apps/lodebook/support">support</a></p>
+      </li>
+      <li class="shelf-item" data-accent="film">
+        <a class="shelf-link" href="/apps/snap-and-wind/">
+          <span class="app-icon app-icon--mono" data-accent="film" data-len="3" style="--size:64px" aria-hidden="true">S&amp;W</span>
+          <div class="shelf-text">
+            <h3 class="shelf-name">Snap &amp; Wind</h3>
+            <p class="shelf-kind">Disposable-film camera · iPhone</p>
+            <p class="shelf-summary">A disposable-film camera for iPhone. You take photos the way you would with a disposable film camera.</p>
+          </div>
+        </a>
+        <p class="shelf-docs mono"><a href="/apps/snap-and-wind/privacy">privacy</a><a href="/apps/snap-and-wind/terms">terms</a><a href="/apps/snap-and-wind/support">support</a></p>
+      </li>
+      <li class="shelf-item" data-accent="pencil">
+        <a class="shelf-link" href="/apps/doodle-a-day/">
+          <img class="app-icon" src="/assets/DoodleADay-AppIcon-1024.png" alt="" width="64" height="64" loading="lazy" decoding="async">
+          <div class="shelf-text">
+            <h3 class="shelf-name">Doodle A Day</h3>
+            <p class="shelf-kind">Doodle &amp; mood journal · iPhone</p>
+            <p class="shelf-summary">A daily doodling and mood journal for iPhone. One prompt a day, one quick sketch, a running visual diary of how you’ve been feeling.</p>
+          </div>
+        </a>
+        <p class="shelf-docs mono"><a href="/apps/doodle-a-day/privacy">privacy</a><a href="/apps/doodle-a-day/terms">terms</a></p>
+      </li>
+      <li class="shelf-item shelf-item--pending">
+        <span class="app-icon app-icon--mono" data-accent="ink" data-len="1" style="--size:64px" aria-hidden="true">K</span>
+        <div class="shelf-text"><h3 class="shelf-name">Keepsake</h3><p class="shelf-kind">Page not published yet</p></div>
+      </li>
+<!-- /build:apps -->
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ OFF THE BENCH ============ -->
+  <section class="section field" id="field" aria-labelledby="field-h">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="kicker">Field notes</p>
+        <h2 id="field-h">Off the bench</h2>
+      </header>
+
+      <div class="field-grid">
+        <figure class="field-photo">
+          <img src="/assets/dsc06578-960.webp" width="960" height="640" alt="A mountain biker leaning into a turn on a dusty desert singletrack, with mesas and a blue sky behind." loading="lazy" decoding="async">
+          <figcaption class="mono">Photography · <a href="https://jacobwilmoth.com" rel="noopener">jacobwilmoth.com &#8599;</a></figcaption>
+        </figure>
+
+        <article class="note note-photo">
+          <svg class="note-glyph" viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="13" width="38" height="26" rx="3"/><circle cx="24" cy="26" r="8"/><path d="M15 13l3-5h12l3 5"/></svg>
+          <h3>Photography</h3>
+          <p>Landscape and portrait work, plus a growing body of short-form cinematic video. On the phone side: <a href="/apps/snap-and-wind/">Snap &amp; Wind</a>, a disposable-film camera for iPhone.</p>
+          <p class="mono"><a href="https://jacobwilmoth.com" rel="noopener">View the gallery &#8599;</a></p>
+        </article>
+
+        <article class="note note-ride">
+          <svg class="note-glyph note-profile" viewBox="0 0 120 40" aria-hidden="true" preserveAspectRatio="none"><path d="M0 34 L10 30 L18 31 L28 22 L36 24 L46 12 L54 15 L62 8 L70 14 L80 11 L90 20 L100 18 L110 26 L120 24"/></svg>
+          <h3>Mountain biking</h3>
+          <p>Riding in the Colorado mountains.</p>
+        </article>
+
+        <article class="note note-geo">
+          <svg class="note-glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M4 30c8-3 14 2 22-1s12-3 18-1"/><path d="M4 37c8-3 14 2 22-1s12-3 18-1"/><path d="M4 44c8-3 14 2 22-1s12-3 18-1"/><path d="M14 23L30 7"/><path d="M25 5l8 8M27 4l-4 1 6 6 1-4"/></svg>
+          <h3>Prospecting &amp; geology</h3>
+          <p>Rockhounding, mining claims and reading the ground. <a href="/apps/lodebook/">Lodebook</a> is my field notebook app for spots, finds and claims.</p>
+        </article>
+
+        <article class="note note-lab">
+          <svg class="note-glyph" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="6" width="32" height="10" rx="1.5"/><rect x="8" y="19" width="32" height="10" rx="1.5"/><rect x="8" y="32" width="32" height="10" rx="1.5"/><path d="M13 11h2M13 24h2M13 37h2M30 11h6M30 24h6M30 37h6"/></svg>
+          <h3>Homelab</h3>
+          <p>A Proxmox homelab and self-hosted services.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ================= CONTACT ================= -->
-  <section class="section contact" id="contact">
-    <div class="wrap contact-inner reveal">
-      <p class="eyebrow mono">03 — Contact</p>
-      <h2>Have a build in mind?</h2>
-      <p class="section-sub">
-        EV conversions, off-grid electrical, embedded hardware, iOS apps, or a shoot —
-        tell me what you're working on.
-      </p>
-      <a class="contact-email mono" href="mailto:hello@wilmoth.engineering">hello@wilmoth.engineering</a>
-      <p class="contact-note">Wilmoth Engineering, LLC — remote consulting, worldwide.</p>
+  <!-- ============ ABOUT: datasheet ============ -->
+  <section class="section about" id="about" aria-labelledby="about-h">
+    <div class="wrap about-grid">
+      <div class="about-copy">
+        <header class="section-head">
+          <p class="kicker">About</p>
+          <h2 id="about-h">One person, both halves</h2>
+        </header>
+        <p class="lede">I&rsquo;m an electrical engineer by trade and a photographer by obsession.</p>
+        <p>Days go to load calculations, wiring harnesses and firmware; the rest goes to lenses, light and motion. Wilmoth Engineering is where those two halves talk to each other: EV conversions with dashboards worth looking at, consulting work that gets documented like it matters, and a habit of shooting the process along the way.</p>
+        <p>Remote, with clients who need someone as comfortable in a schematic as behind a camera.</p>
+      </div>
+
+      <div class="datasheet" aria-labelledby="ds-h">
+        <div class="ds-head mono"><span>Datasheet</span><span>Wilmoth Engineering, LLC</span></div>
+        <h3 id="ds-h" class="ds-part">Jacob Wilmoth</h3>
+        <dl class="ds-table">
+          <div><dt>Type</dt><dd>Electrical engineer, photographer</dd></div>
+          <div><dt>Core functions</dt><dd>EV conversion systems, embedded firmware, iOS &amp; Mac apps</dd></div>
+          <div><dt>Interfaces</dt><dd>Schematic, CAN bus, code, camera, client</dd></div>
+          <div><dt>Package</dt><dd>Remote, project or retainer</dd></div>
+          <div><dt>Off-duty modes</dt><dd>Mountain biking, prospecting, homelab</dd></div>
+          <div><dt>Status</dt><dd><span class="ds-status">Taking projects</span></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section contact" id="contact" aria-labelledby="contact-h">
+    <div class="wrap contact-inner">
+      <p class="kicker">Contact</p>
+      <h2 id="contact-h">Have a build in mind?</h2>
+      <p class="section-sub">EV conversions, off-grid electrical, embedded hardware, iOS apps, or a shoot. Tell me what you&rsquo;re working on.</p>
+      <a class="contact-email" href="mailto:hello@wilmoth.engineering">hello@wilmoth.engineering</a>
+      <p class="contact-note mono">Wilmoth Engineering, LLC · remote consulting, worldwide</p>
     </div>
   </section>
 
 </main>
 
-<footer class="site-footer">
-  <div class="wrap footer-inner">
-    <p>&copy; 2026 Wilmoth.Engineering. All rights reserved.</p>
-    <nav class="footer-nav" aria-label="Legal">
-      <a href="index.html">Home</a>
-      <a href="https://jacobwilmoth.com" target="_blank" rel="noopener">Photography</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="terms.html">Terms</a>
-    </nav>
+<!-- build:footer -->
+<footer class="colophon">
+  <div class="wrap">
+    <div class="colophon-grid">
+      <div class="colophon-cell colophon-firm">
+        <p class="cell-label">Firm</p>
+        <p class="colophon-name">Wilmoth Engineering, LLC</p>
+        <p><a href="mailto:hello@wilmoth.engineering">hello@wilmoth.engineering</a></p>
+      </div>
+      <div class="colophon-cell colophon-dir">
+        <p class="cell-label">Apps · privacy, terms &amp; support</p>
+        <ul class="dir">
+          <li>
+            <a class="dir-app" href="/apps/cannery/">CANnery</a>
+            <span class="dir-docs"><a href="/apps/cannery/privacy">Privacy</a><a href="/apps/cannery/support">Support</a></span>
+          </li>
+          <li>
+            <a class="dir-app" href="/apps/lodebook/">Lodebook</a>
+            <span class="dir-docs"><a href="/apps/lodebook/privacy">Privacy</a><a href="/apps/lodebook/support">Support</a></span>
+          </li>
+          <li>
+            <a class="dir-app" href="/apps/snap-and-wind/">Snap &amp; Wind</a>
+            <span class="dir-docs"><a href="/apps/snap-and-wind/privacy">Privacy</a><a href="/apps/snap-and-wind/terms">Terms</a><a href="/apps/snap-and-wind/support">Support</a></span>
+          </li>
+          <li>
+            <a class="dir-app" href="/apps/doodle-a-day/">Doodle A Day</a>
+            <span class="dir-docs"><a href="/apps/doodle-a-day/privacy">Privacy</a><a href="/apps/doodle-a-day/terms">Terms</a></span>
+          </li>
+        </ul>
+      </div>
+      <div class="colophon-cell">
+        <p class="cell-label">Elsewhere</p>
+        <ul class="plain">
+          <li><a href="https://jacobwilmoth.com" rel="noopener">Photography · jacobwilmoth.com</a></li>
+          <li><a href="https://evengineeringlab.com" rel="noopener">EV Engineering Lab · evengineeringlab.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="colophon-copy">&copy; 2026 Wilmoth.Engineering. All rights reserved.</p>
   </div>
 </footer>
+<!-- /build:footer -->
 
-<script src="js/circuit.js"></script>
-<script src="js/main.js"></script>
+<script type="module" src="/js/system/index.js"></script>
 </body>
 </html>
