@@ -55,7 +55,7 @@
       <div class="system-instruments" aria-hidden="true">
         <dl class="readout" id="readout">
           <div><dt>12 V</dt><dd data-r="lv">On</dd></div>
-          <div><dt>K1 contactor</dt><dd data-r="k1">Closed</dd></div>
+          <div><dt>Contactors</dt><dd data-r="k">K1 + K2 closed</dd></div>
           <div><dt>DC link</dt><dd><span class="meter"><span data-r="dclink"></span></span></dd></div>
           <div><dt>Motor</dt><dd data-r="motor">Driving</dd></div>
           <div><dt>J1772</dt><dd data-r="evse">Unplugged</dd></div>
@@ -91,13 +91,13 @@
       <div class="step" data-state="precharge">
         <p class="step-no mono">Step 3</p>
         <h2>Precharge</h2>
-        <p>Before the main contactor closes, a resistor charges the controller&rsquo;s capacitors slowly. Close it into an empty capacitor bank and the inrush can weld the contacts.</p>
+        <p>The pack has a contactor on each side. The negative one, K2, closes first. Then a resistor across the positive contactor charges the controller&rsquo;s capacitors slowly. Close straight into an empty capacitor bank and the inrush can weld the contacts.</p>
       </div>
 
       <div class="step" data-state="contactors">
         <p class="step-no mono">Step 4</p>
-        <h2>Main contactor closes</h2>
-        <p>With the DC link near pack voltage, the contactor closes. High voltage (orange, as it is in every EV) reaches the motor controller and the DC-DC converter that keeps the 12 V side charged.</p>
+        <h2>Contactors closed</h2>
+        <p>With the DC link near pack voltage, the positive contactor, K1, closes too, so both sides of the pack are connected. High voltage (orange, as it is in every EV) reaches the motor controller and the DC-DC converter that keeps the 12 V side charged.</p>
       </div>
 
       <div class="step" data-state="drive">
@@ -109,7 +109,7 @@
       <div class="step" data-state="charge">
         <p class="step-no mono">Step 6</p>
         <h2>Plug in</h2>
-        <p>At a J1772 station, the control-pilot signal tells the charger how much current it may draw, and current flows back into the pack. I&rsquo;m building a J1772 controller from the ground up.</p>
+        <p>At a J1772 station, the control-pilot signal tells the charger how much current it may draw, and current flows back into the pack. I&rsquo;m building a J1772 controller from the ground up and testing it on Rosie, my 1978 Beetle.</p>
       </div>
 
       <div class="step" data-state="cannery">
@@ -137,8 +137,8 @@
             <h3>Rosie</h3>
             <p class="bom-spec mono">1978 VW Beetle · EV conversion · daily driver</p>
           </div>
-          <p class="bom-desc">A daily-driven EV conversion. A custom dashboard and telematics make it a rolling data platform, not just a motor swap.</p>
-          <p class="bom-tags mono">Battery systems · CAN bus · Dashboards</p>
+          <p class="bom-desc">A daily-driven EV conversion, and the test bed for my J1772 charge controller.</p>
+          <p class="bom-tags mono">Battery systems · J1772 · Charging</p>
         </li>
         <li class="bom-row">
           <span class="balloon" aria-hidden="true">2</span>
@@ -146,8 +146,8 @@
             <h3>Wall-E</h3>
             <p class="bom-spec mono">1996 Subaru Outback · EV conversion · daily driver</p>
           </div>
-          <p class="bom-desc">The second daily-driven conversion, with the same approach: custom dashboard and telematics on top of the drivetrain.</p>
-          <p class="bom-tags mono">Battery systems · CAN bus · Telematics</p>
+          <p class="bom-desc">The second daily-driven conversion, and the test bed for a new custom dashboard and telematics.</p>
+          <p class="bom-tags mono">Battery systems · CAN bus · Dashboards · Telematics</p>
         </li>
         <li class="bom-row">
           <span class="balloon" aria-hidden="true">3</span>
@@ -155,7 +155,7 @@
             <h3>J1772 controller</h3>
             <p class="bom-spec mono">Embedded hardware · prototype proven</p>
           </div>
-          <p class="bom-desc">A ground-up EV charging controller built to the J1772 standard: pilot signaling, relay control and safety interlocks on custom hardware. Telematics features in progress.</p>
+          <p class="bom-desc">A ground-up EV charging controller built to the J1772 standard: pilot signaling, relay control and safety interlocks on custom hardware, tested on Rosie. Telematics features in progress.</p>
           <p class="bom-tags mono">Embedded C · Power electronics · CAD</p>
         </li>
         <li class="bom-row">
@@ -294,7 +294,7 @@
           <h2 id="about-h">One person, both halves</h2>
         </header>
         <p class="lede">I&rsquo;m an electrical engineer by trade and a photographer by obsession.</p>
-        <p>Days go to load calculations, wiring harnesses and firmware; the rest goes to lenses, light and motion. Wilmoth Engineering is where those two halves talk to each other: EV conversions with dashboards worth looking at, consulting work that gets documented like it matters, and a habit of shooting the process along the way.</p>
+        <p>Days go to load calculations, wiring harnesses and firmware; the rest goes to lenses, light and motion. Wilmoth Engineering is where those two halves talk to each other: EV conversions that double as test beds, consulting work that gets documented like it matters, and a habit of shooting the process along the way.</p>
         <p>Remote, with clients who need someone as comfortable in a schematic as behind a camera.</p>
       </div>
 

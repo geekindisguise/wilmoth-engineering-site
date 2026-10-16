@@ -54,8 +54,8 @@ function init() {
   function readout(s) {
     if (!R.lv) return;
     R.lv.textContent = s.live.includes('lv') ? 'On' : 'Off';
-    R.k1.textContent = s.contactor ? 'Closed' : s.live.includes('hv-pre') ? 'Open · precharging' : 'Open';
-    R.k1.classList.toggle('is-hv', !!s.contactor);
+    R.k.textContent = s.k.K1 && s.k.K2 ? 'K1 + K2 closed' : s.k.K2 ? 'K2 closed · precharging' : 'Open';
+    R.k.classList.toggle('is-hv', !!(s.k.K1 || s.k.K2));
     R.motor.textContent = s.motor ? 'Driving' : 'Stopped';
     R.evse.textContent = s.charging ? 'Plugged in · pilot on' : 'Unplugged';
     R.evse.classList.toggle('is-can', !!s.charging);

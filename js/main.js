@@ -57,8 +57,8 @@ var PROJECTS = [
     accent: 'cyan',
     gradient: 'linear-gradient(135deg, #10232A, #133339 60%, #46E4D322)',
     glyph: '1978 Beetle · 1996 Outback',
-    description: 'Two daily-driven EV conversions: Rosie, a 1978 VW Beetle, and Wall-E, a 1996 Subaru Outback. Custom dashboards and telematics turn each one into a rolling data platform, not just a swap.',
-    tags: ['Battery Systems', 'CAN Bus', 'Dashboards'],
+    description: 'Two daily-driven EV conversions: Rosie, a 1978 VW Beetle, and Wall-E, a 1996 Subaru Outback. Rosie is the test bed for the J1772 charge controller; Wall-E is the test bed for a new custom dashboard and telematics.',
+    tags: ['Battery Systems', 'CAN Bus', 'J1772', 'Telematics'],
     links: [
       { label: 'Project log', href: '#contact' }
     ]

@@ -342,7 +342,7 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .motor-on .rotor { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .switch { transform-box: fill-box; transform-origin: 0 100%; transition: transform .35s var(--ease); }
-.contactor-closed .switch { transform: rotate(40deg); }
+.cmp-contactor.is-closed .switch { transform: rotate(40deg); }
 .ref { font-size: .25px; font-weight: 500; fill: var(--ink); text-anchor: middle; letter-spacing: .02em; }
 .parts-key {
   display: none; margin: 0; padding: 10px 12px; list-style: none;

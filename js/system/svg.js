@@ -4,7 +4,7 @@
 import { COMPONENTS, NETS, TAP_X, BUS_Z, MODULE_X, isLive, flowOf } from './graph.js';
 
 const NS = 'http://www.w3.org/2000/svg';
-const VIEW = [-7.45, -2.95, 14.9, 6.55];
+const VIEW = [-7.45, -3.1, 14.9, 6.7];
 
 function el(name, attrs, parent) {
   const n = document.createElementNS(NS, name);
@@ -100,6 +100,7 @@ export function createSchematic(container) {
     const ly = c.type === 'laptop' || c.type === 'screen' ? c.z + c.d / 2 + 0.34
       : c.id === 'R1' || c.id === 'R2' ? c.z + 0.52
       : c.id === 'U1' ? c.z + 0.08
+      : c.id === 'R3' ? c.z + c.d / 2 + 0.24 // below: K1 sits just above it
       : c.z - (c.type === 'motor' || c.type === 'inlet' ? c.d / 2 : c.d / 2) - 0.12;
     const t = el('text', { x: c.x, y: ly, class: 'ref' }, g);
     t.textContent = c.id;
@@ -138,7 +139,7 @@ export function createSchematic(container) {
       }
       svg.classList.toggle('has-focus', state.focus.length > 0);
       for (const id in cmpEls) cmpEls[id].classList.toggle('is-focus', state.focus.includes(id));
-      svg.classList.toggle('contactor-closed', !!state.contactor);
+      for (const id in state.k) cmpEls[id]?.classList.toggle('is-closed', !!state.k[id]);
       svg.classList.toggle('motor-on', !!state.motor);
       svg.classList.toggle('charging', !!state.charging);
       svg.classList.toggle('scan', !!state.scan);

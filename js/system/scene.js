@@ -6,7 +6,7 @@
 //   cables      colour up when their net is live (HV orange, CAN blue, 12 V ink)
 //   dots        current along HV runs that are actually carrying it
 //   pills       CAN frames: sender stub → trunk → both ways to every node
-//   K1          plunger drops when the contactor closes
+//   K1, K2      plungers drop as each main contactor closes (K2 first)
 //   U2 gauge    DC-link voltage: ramps during precharge
 //   M1          rotor turns when the controller is driving it
 //   BT1         module scan during BMS check; state of charge rises on charge
@@ -14,7 +14,7 @@
 import * as T from '../vendor/three.js';
 import { COMPONENTS, NETS, MODULE_X, TAP_X, isLive, flowOf } from './graph.js';
 
-const BOUNDS = { x0: -7.4, x1: 7.4, z0: -2.95, z1: 3.7, y1: 1.3 };
+const BOUNDS = { x0: -7.4, x1: 7.4, z0: -3.05, z1: 3.7, y1: 1.3 };
 // Mostly frontal and high, so the left-to-right power flow reads like the
 // schematic and the wide drawing fills a wide panel.
 const CAM_DIR = new T.Vector3(-0.08, 0.8, 0.62).normalize();
@@ -214,7 +214,7 @@ export async function createScene(container) {
   const trace = { a: [], b: [], c: [] };
 
   // ---- components
-  const live = { modules: [], socBars: [], gauge: null, plunger: null, rotor: null };
+  const live = { modules: [], socBars: [], gauge: null, plungers: {}, rotor: null };
   for (const c of COMPONENTS) {
     const g = new T.Group();
     g.position.set(c.x, 0, c.z);
@@ -262,9 +262,9 @@ export async function createScene(container) {
       }
       case 'contactor': {
         addBox(g, c.w, c.h, c.d, 0, c.h / 2, 0, M.part, true, id);
-        addCyl(g, 0.07, 0.12, -0.22, c.h + 0.06, -0.15, M.dark, null, false);
-        addCyl(g, 0.07, 0.12, 0.22, c.h + 0.06, -0.15, M.dark, null, false);
-        live.plunger = addCyl(g, 0.15, 0.28, 0, c.h + 0.14, 0.15, M.hvBand, null, true, id);
+        addCyl(g, 0.07, 0.12, -0.22, c.h + 0.06, -0.12, M.dark, null, false);
+        addCyl(g, 0.07, 0.12, 0.22, c.h + 0.06, -0.12, M.dark, null, false);
+        live.plungers[id] = addCyl(g, 0.13, 0.28, 0, c.h + 0.14, 0.1, M.hvBand, null, true, id);
         break;
       }
       case 'powerres': {
@@ -392,9 +392,9 @@ export async function createScene(container) {
   const labels = COMPONENTS.map(c => {
     const d = document.createElement('div');
     d.className = 'scene-label';
-    d.innerHTML = `<b>${c.id}</b><span>${c.name}</span>`;
+    d.innerHTML = `<b>${c.id}</b><span>${c.label || c.name}</span>`;
     labelsEl.appendChild(d);
-    const anchorY = c.type === 'laptop' ? 1.05 : c.type === 'screen' ? 1.05 : c.type === 'motor' ? c.h + 0.35 : c.h + 0.32;
+    const anchorY = (c.lift || 0) + (c.type === 'laptop' ? 1.05 : c.type === 'screen' ? 1.05 : c.type === 'motor' ? c.h + 0.35 : c.h + 0.32);
     return { c, d, p: new T.Vector3(c.x, anchorY, c.z - (c.type === 'laptop' ? 0.3 : 0)) };
   });
 
@@ -492,7 +492,7 @@ export async function createScene(container) {
 
   // ---- state
   let state = null, stateKey = '', stateTime = 0;
-  const anim = { motor: 0, dclink: 0, contactor: 0, soc: 0.62, scan: 0, flowPhase: 0 };
+  const anim = { motor: 0, dclink: 0, k: { K1: 0, K2: 0 }, soc: 0.62, scan: 0, flowPhase: 0 };
 
   function setState(s, key) {
     if (key !== stateKey) stateTime = 0;
@@ -534,7 +534,7 @@ export async function createScene(container) {
       ctx.strokeStyle = '#2b2f35'; ctx.lineWidth = 14; ctx.beginPath(); ctx.arc(120, 128, 72, Math.PI * 0.8, Math.PI * 2.2); ctx.stroke();
       ctx.strokeStyle = '#ff7a33'; ctx.beginPath(); ctx.arc(120, 128, 72, Math.PI * 0.8, Math.PI * (0.8 + 1.4 * anim.motor * (0.75 + 0.08 * Math.sin(t * 0.7)))); ctx.stroke();
       ctx.fillStyle = ink; ctx.font = '600 22px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
-      ctx.fillText(anim.contactor > 0.5 ? 'READY' : anim.dclink > 0.05 ? 'PRECHG' : state && state.charging ? 'CHARGE' : 'KEY ON', 120, 136);
+      ctx.fillText(anim.k.K1 > 0.5 ? 'READY' : anim.dclink > 0.05 ? 'PRECHG' : state && state.charging ? 'CHARGE' : 'KEY ON', 120, 136);
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8b8f96'; ctx.font = '13px "IBM Plex Mono", monospace'; ctx.fillText('PACK', 246, 64);
       ctx.strokeStyle = '#3a3f45'; ctx.lineWidth = 2; ctx.strokeRect(246, 74, 110, 26);
@@ -566,11 +566,11 @@ export async function createScene(container) {
     anim.motor += ((state.motor || 0) - anim.motor) * (1 - Math.exp(-dt * 1.5));
     const dcGoal = state.dclink === 'ramp' ? Math.min(0.95, 1 - Math.exp(-stateTime * 1.1)) : state.dclink;
     anim.dclink += (dcGoal - anim.dclink) * (state.dclink === 'ramp' ? 1 : k);
-    anim.contactor += ((state.contactor || 0) - anim.contactor) * (1 - Math.exp(-dt * 10));
+    for (const id in anim.k) anim.k[id] += ((state.k[id] || 0) - anim.k[id]) * (1 - Math.exp(-dt * 10));
     if (state.charging) anim.soc = Math.min(0.96, anim.soc + dt * 0.035); else anim.soc += (0.62 - anim.soc) * dt * 0.2;
     if (live.rotor) live.rotor.rotation.z -= dt * anim.motor * 9;
     if (live.gauge) live.gauge.scale.y = Math.max(0.02, anim.dclink);
-    if (live.plunger) live.plunger.position.y = cmp.K1.c.h + 0.14 - anim.contactor * 0.1;
+    for (const id in live.plungers) live.plungers[id].position.y = cmp[id].c.h + 0.14 - anim.k[id] * 0.1;
     live.socBars.forEach((b, i) => {
       b.scale.x = Math.max(0.03, anim.soc - i * 0.015);
       b.material.color.copy(state.charging ? C.hv : C.can);

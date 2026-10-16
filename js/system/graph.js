@@ -17,9 +17,12 @@ export const COMPONENTS = [
     note: 'Modules in series. The high-voltage source for everything else.' },
   { id: 'U1', name: 'BMS', type: 'board', x: -0.9, z: -0.35, w: 2.8, d: 0.55, h: 0.1,
     note: 'Battery management: reads every module and guards the pack.' },
-  { id: 'K1', name: 'Main contactor', type: 'contactor', x: 2.2, z: -1.9, w: 0.8, d: 0.9, h: 0.55, hv: true,
-    note: 'Connects the pack to the rest of the car, after precharge.' },
-  { id: 'R3', name: 'Precharge resistor', type: 'powerres', x: 2.2, z: -0.95, w: 0.75, d: 0.3, h: 0.22, hv: true,
+  // label: shorter name for the crowded 3D labels; lift raises one (3D only).
+  { id: 'K1', name: 'Main contactor (+)', label: 'Contactor +', type: 'contactor', x: 2.2, z: -1.45, w: 0.8, d: 0.55, h: 0.5, hv: true,
+    note: 'Positive side. Closes last, once precharge is done.' },
+  { id: 'K2', name: 'Main contactor (−)', label: 'Contactor −', lift: 0.45, type: 'contactor', x: 2.2, z: -2.4, w: 0.8, d: 0.55, h: 0.5, hv: true,
+    note: 'Negative side. Closes first, so precharge has a return path.' },
+  { id: 'R3', name: 'Precharge resistor', type: 'powerres', x: 2.2, z: -0.75, w: 0.75, d: 0.3, h: 0.22, hv: true,
     note: 'Limits inrush while the controller capacitors charge.' },
   { id: 'U2', name: 'Motor controller', type: 'inverter', x: 4.1, z: -1.9, w: 1.4, d: 1.2, h: 0.65, hv: true,
     note: 'Inverter: DC from the pack in, three-phase AC to the motor out.' },
@@ -45,9 +48,12 @@ export const NETS = [
   { id: 'ac', kind: 'ac', pts: [[-5.85, -2.15], [-5.15, -2.15]] },
   { id: 'pilot', kind: 'pilot', pts: [[-5.85, -1.65], [-5.15, -1.65]] },
   { id: 'hv-charge', kind: 'hv', pts: [[-3.85, -1.9], [-3.05, -1.9]] },
-  { id: 'hv-pack', kind: 'hv', pts: [[1.25, -1.9], [1.8, -1.9]] },
-  { id: 'hv-pre', kind: 'hv', pts: [[1.5, -1.9], [1.5, -0.95], [2.9, -0.95], [2.9, -1.9]] },
-  { id: 'hv-main', kind: 'hv', pts: [[2.6, -1.9], [3.4, -1.9]] },
+  // HV+ through K1 (with precharge across it), HV− through K2.
+  { id: 'hv-pack', kind: 'hv', pts: [[1.25, -1.45], [1.8, -1.45]] },
+  { id: 'hv-pre', kind: 'hv', pts: [[1.5, -1.45], [1.5, -0.75], [2.9, -0.75], [2.9, -1.45]] },
+  { id: 'hv-main', kind: 'hv', pts: [[2.6, -1.45], [3.4, -1.45]] },
+  { id: 'hv-neg-pack', kind: 'hv', pts: [[1.25, -2.4], [1.8, -2.4]] },
+  { id: 'hv-neg-main', kind: 'hv', pts: [[2.6, -2.4], [3.4, -2.4]] },
   { id: 'hv-dcdc', kind: 'hv', pts: [[3.55, -1.3], [3.55, 0.15]] },
   { id: 'phase-a', kind: 'phase', pts: [[4.8, -2.2], [5.6, -2.2]] },
   { id: 'phase-b', kind: 'phase', pts: [[4.8, -1.9], [5.6, -1.9]] },
@@ -84,46 +90,50 @@ export const MESSAGES = {
 //   flow     HV nets with visible current; value is direction (+1 / -1)
 //   talkers  CAN senders and their frames per second
 //   focus    components to emphasize; camera eases toward them in 3D
+//   k        which main contactors are closed. The usual order: K2 (−)
+//            closes, precharge brings the DC link up through R3, then K1 (+).
+const OPEN = { K1: 0, K2: 0 };
+const CLOSED = { K1: 1, K2: 1 };
 export const STATES = {
   running: {
-    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'sense-*', 'can-*', 'hv-pack', 'hv-main', 'hv-dcdc', 'phase-*'],
-    flow: { 'hv-pack': 1, 'hv-main': 1, 'hv-dcdc': 1, 'phase-*': 1 },
-    talkers: { U1: 2.5, U2: 4, U5: 1 }, motor: 1, dclink: 1, contactor: 1, focus: [],
+    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'sense-*', 'can-*', 'hv-pack', 'hv-main', 'hv-neg-*', 'hv-dcdc', 'phase-*'],
+    flow: { 'hv-pack': 1, 'hv-main': 1, 'hv-neg-*': -1, 'hv-dcdc': 1, 'phase-*': 1 },
+    talkers: { U1: 2.5, U2: 4, U5: 1 }, motor: 1, dclink: 1, k: CLOSED, focus: [],
   },
   wake: {
     live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*'],
-    flow: {}, talkers: { U1: 1, U2: 1, U5: 1, U3: 0.5 }, motor: 0, dclink: 0, contactor: 0,
+    flow: {}, talkers: { U1: 1, U2: 1, U5: 1, U3: 0.5 }, motor: 0, dclink: 0, k: OPEN,
     focus: ['B2', 'U1', 'U2', 'U5', 'R1', 'R2'],
   },
   bms: {
     live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*', 'sense-*'],
-    flow: {}, talkers: { U1: 5, U2: 0.6, U5: 0.6 }, motor: 0, dclink: 0, contactor: 0, scan: true,
+    flow: {}, talkers: { U1: 5, U2: 0.6, U5: 0.6 }, motor: 0, dclink: 0, k: OPEN, scan: true,
     focus: ['BT1', 'U1'],
   },
   precharge: {
-    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*', 'sense-*', 'hv-pack', 'hv-pre'],
-    flow: { 'hv-pack': 1, 'hv-pre': 1 }, talkers: { U1: 2, U2: 3, U5: 0.6 },
-    motor: 0, dclink: 'ramp', contactor: 0, focus: ['R3', 'K1', 'U2'],
+    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*', 'sense-*', 'hv-pack', 'hv-pre', 'hv-neg-*'],
+    flow: { 'hv-pack': 1, 'hv-pre': 1, 'hv-neg-*': -1 }, talkers: { U1: 2, U2: 3, U5: 0.6 },
+    motor: 0, dclink: 'ramp', k: { K1: 0, K2: 1 }, focus: ['K2', 'R3', 'U2'],
   },
   contactors: {
-    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*', 'sense-*', 'hv-pack', 'hv-main', 'hv-dcdc'],
-    flow: { 'hv-pack': 1, 'hv-main': 1, 'hv-dcdc': 1 }, talkers: { U1: 2, U2: 2, U5: 0.6 },
-    motor: 0, dclink: 1, contactor: 1, focus: ['K1', 'U2', 'U4'],
+    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*', 'sense-*', 'hv-pack', 'hv-main', 'hv-neg-*', 'hv-dcdc'],
+    flow: { 'hv-pack': 1, 'hv-main': 1, 'hv-neg-*': -1, 'hv-dcdc': 1 }, talkers: { U1: 2, U2: 2, U5: 0.6 },
+    motor: 0, dclink: 1, k: CLOSED, focus: ['K1', 'K2', 'U2', 'U4'],
   },
   drive: {
-    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*', 'sense-*', 'hv-pack', 'hv-main', 'hv-dcdc', 'phase-*'],
-    flow: { 'hv-pack': 1, 'hv-main': 1, 'hv-dcdc': 1, 'phase-*': 1 }, talkers: { U1: 2, U2: 6, U5: 2 },
-    motor: 1, dclink: 1, contactor: 1, focus: ['U2', 'M1', 'U5'],
+    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*', 'sense-*', 'hv-pack', 'hv-main', 'hv-neg-*', 'hv-dcdc', 'phase-*'],
+    flow: { 'hv-pack': 1, 'hv-main': 1, 'hv-neg-*': -1, 'hv-dcdc': 1, 'phase-*': 1 }, talkers: { U1: 2, U2: 6, U5: 2 },
+    motor: 1, dclink: 1, k: CLOSED, focus: ['U2', 'M1', 'U5'],
   },
   charge: {
     live: ['ac', 'pilot', 'hv-charge', 'lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'can-*', 'sense-*'],
     flow: { 'hv-charge': 1, ac: 1 }, talkers: { U3: 4, U1: 3, U5: 0.5 },
-    motor: 0, dclink: 0, contactor: 0, charging: true, focus: ['J1', 'U3', 'BT1'],
+    motor: 0, dclink: 0, k: OPEN, charging: true, focus: ['J1', 'U3', 'BT1'],
   },
   cannery: {
-    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'sense-*', 'can-*', 'hv-pack', 'hv-main', 'hv-dcdc', 'phase-*'],
-    flow: { 'hv-pack': 1, 'hv-main': 1, 'hv-dcdc': 1, 'phase-*': 1 },
-    talkers: { U1: 3, U2: 5, U5: 1.5 }, motor: 1, dclink: 1, contactor: 1, focus: ['U6'],
+    live: ['lv', 'lv-rail', 'lv-bms', 'lv-mcu', 'sense-*', 'can-*', 'hv-pack', 'hv-main', 'hv-neg-*', 'hv-dcdc', 'phase-*'],
+    flow: { 'hv-pack': 1, 'hv-main': 1, 'hv-neg-*': -1, 'hv-dcdc': 1, 'phase-*': 1 },
+    talkers: { U1: 3, U2: 5, U5: 1.5 }, motor: 1, dclink: 1, k: CLOSED, focus: ['U6'],
   },
 };
 
