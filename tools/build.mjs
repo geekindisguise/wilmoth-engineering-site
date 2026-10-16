@@ -32,7 +32,8 @@ function out(rel, html) {
 
 const FAVICON = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#16181b"/><path d="M4 16h8M20 16h8M12 8v16M17 12v8" stroke="#f1ede4" stroke-width="2.6" stroke-linecap="round"/><circle cx="26" cy="7" r="2.6" fill="#e2560b"/></svg>')}`;
 
-function head({ title, description, canonical, extra = '' }) {
+function head({ title, description, canonical, noindex, extra = '' }) {
+  if (noindex) extra = `<meta name="robots" content="noindex">\n${extra}`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,8 +74,12 @@ function header(current) {
 </header>`;
 }
 
-const published = APPS.filter(a => !a.unpublished);
+// Only released apps reach the public site; see `draft` in content/apps.mjs.
+const published = APPS.filter(a => !a.draft);
+const drafts = APPS.filter(a => a.draft);
 const docsOf = app => DOC_ORDER.filter(d => app.docs[d]);
+// A draft's own URLs: the legacy addresses App Store Connect already has.
+const legacyUrl = (app, d) => app.docs[d].legacy[0].replace(/(\/index)?\.html$/, '');
 const appUrl = app => `/apps/${app.slug}/`;
 // Display form of a URL: lets long paths wrap at slashes, not mid-word.
 const shownUrl = path => `wilmoth.engineering${path}`.replace(/\//g, '/<wbr>');
@@ -121,28 +126,35 @@ function footer() {
 
 // ---------------------------------------------------------------- pages
 
-function docPage(app, d, { legacyOf } = {}) {
+// mode: 'public'  canonical /apps/<slug>/<doc> page (and its legacy copies)
+//       'unlisted' a draft app's legacy URL: no overview, tabs between its
+//                  own legacy URLs, noindex, nothing else links here
+//       'preview'  local-only drafts/apps/<slug>/<doc>/
+function docPage(app, d, mode = 'public') {
   const fragment = readFileSync(join(ROOT, 'content/apps', app.slug, `${d}.html`), 'utf8');
   const title = `${docTitle(app, d)} — ${app.name} | Wilmoth Engineering`;
-  const tabs = [`<li><a href="${appUrl(app)}">Overview</a></li>`]
-    .concat(docsOf(app).map(x => `<li><a href="${docUrl(app, x)}"${x === d ? ' aria-current="page"' : ''}>${docTitle(app, x)}</a></li>`))
+  const unlisted = mode === 'unlisted';
+  const url = x => unlisted ? legacyUrl(app, x) : docUrl(app, x);
+  const tabs = (unlisted ? [] : [`<li><a href="${appUrl(app)}">Overview</a></li>`])
+    .concat(docsOf(app).map(x => `<li><a href="${url(x)}"${x === d ? ' aria-current="page"' : ''}>${docTitle(app, x)}</a></li>`))
     .join('\n          ');
-  return `${head({ title, canonical: docUrl(app, d) })}
+  const appTag = unlisted ? 'div' : 'a';
+  return `${head({ title, canonical: mode === 'public' ? docUrl(app, d) : null, noindex: mode !== 'public' })}
 <body class="page-doc">
 ${header('apps')}
 
 <main id="main" class="doc wrap">
   <aside class="doc-rail">
-    <a class="doc-app" href="${appUrl(app)}">
+    <${appTag} class="doc-app"${unlisted ? '' : ` href="${appUrl(app)}"`}>
       ${appIcon(app, 44)}
       <span><span class="doc-app-name">${esc(app.name)}</span><span class="doc-app-meta">${esc(app.platforms)}</span></span>
-    </a>
+    </${appTag}>
     <nav aria-label="${esc(app.name)} pages">
       <ol class="doc-tabs">
           ${tabs}
       </ol>
     </nav>
-    <p class="doc-url"><span class="cell-label">Address</span>${shownUrl(docUrl(app, d))}</p>
+    <p class="doc-url"><span class="cell-label">Address</span>${shownUrl(url(d))}</p>
   </aside>
 
   <article class="legal">
@@ -160,7 +172,7 @@ function landingPage(app) {
   const store = app.appStore
     ? `<a class="btn btn-solid" href="${app.appStore}" rel="noopener">View on the App Store</a>`
     : '';
-  return `${head({ title: `${app.name} — ${app.kind} | Wilmoth Engineering`, description: app.summary, canonical: appUrl(app) })}
+  return `${head({ title: `${app.name} — ${app.kind} | Wilmoth Engineering`, description: app.summary, canonical: app.draft ? null : appUrl(app), noindex: app.draft })}
 <body class="page-app" data-accent="${app.accent}">
 ${header('apps')}
 
@@ -197,25 +209,37 @@ ${footer()}
 `;
 }
 
-function shelf({ headingLevel = 3 } = {}) {
+// The apps, laid out as detail views on a drawing sheet: each app gets a
+// lettered detail balloon, its icon inside a detail circle (with centre
+// lines), drawing notes for what it does, and a document schedule.
+const DETAIL_LETTERS = 'ABCDEFGHJKLMNPRTUVWY'; // drawing practice skips I, O, Q, S, X, Z
+function details({ headingLevel = 3 } = {}) {
   const h = `h${headingLevel}`;
-  return APPS.map(app => {
-    if (app.unpublished) {
-      return `<li class="shelf-item shelf-item--pending">
-        ${appIcon(app, 64)}
-        <div class="shelf-text"><${h} class="shelf-name">${esc(app.name)}</${h}><p class="shelf-kind">Page not published yet</p></div>
-      </li>`;
-    }
-    return `<li class="shelf-item" data-accent="${app.accent}">
-        <a class="shelf-link" href="${appUrl(app)}">
-          ${appIcon(app, 64)}
-          <div class="shelf-text">
-            <${h} class="shelf-name">${esc(app.name)}</${h}>
-            <p class="shelf-kind">${esc(app.kind)} · ${esc(app.platforms)}</p>
-            <p class="shelf-summary">${esc(app.summary)}</p>
-          </div>
-        </a>
-        <p class="shelf-docs mono">${docsOf(app).map(d => `<a href="${docUrl(app, d)}">${d}</a>`).join('')}</p>
+  return published.map((app, i) => {
+    const L = DETAIL_LETTERS[i];
+    const store = app.appStore ? `<p class="detail-store"><a class="btn btn-line" href="${app.appStore}" rel="noopener">App Store &#8599;</a></p>` : '';
+    const xref = app.xref ? `<p class="detail-xref mono"><a href="${app.xref.href}">${esc(app.xref.text)}</a></p>` : '';
+    return `<li class="detail" data-accent="${app.accent}">
+        <figure class="detail-fig">
+          <a class="detail-view" href="${appUrl(app)}" tabindex="-1" aria-hidden="true">${appIcon(app, 104)}</a>
+          <span class="detail-balloon" aria-hidden="true">${L}</span>
+          <figcaption class="detail-cap mono"><b>Detail ${L}</b>${esc(app.platforms)}</figcaption>
+        </figure>
+        <div class="detail-body">
+          <p class="detail-kind mono">${esc(app.kind)}</p>
+          <${h} class="detail-name"><a href="${appUrl(app)}">${esc(app.name)}</a></${h}>
+          <p class="detail-summary">${esc(app.summary)}</p>
+          <p class="cell-label">Notes</p>
+          <ol class="detail-notes">
+            ${app.facts.map(f => `<li>${esc(f)}</li>`).join('\n            ')}
+          </ol>
+          ${xref}
+          <p class="cell-label">Documents</p>
+          <ul class="detail-docs">
+            ${docsOf(app).map(d => `<li><a href="${docUrl(app, d)}">${docTitle(app, d)}</a><span class="mono">${shownUrl(docUrl(app, d))}</span></li>`).join('\n            ')}
+          </ul>
+          ${store}
+        </div>
       </li>`;
   }).join('\n      ');
 }
@@ -229,8 +253,8 @@ ${header('apps')}
   <p class="kicker">Software</p>
   <h1>Apps</h1>
   <p class="lede">iPhone, iPad and Mac apps from Wilmoth Engineering, LLC. Each one has its own page with privacy, terms and support.</p>
-  <ul class="shelf shelf--index">
-      ${shelf({ headingLevel: 2 })}
+  <ul class="details">
+      ${details({ headingLevel: 2 })}
   </ul>
 </main>
 
@@ -269,19 +293,48 @@ for (const app of published) {
     for (const legacy of app.docs[d].legacy || []) out(legacy.slice(1), page);
   }
 }
+
+// Drafts: unlisted legacy URLs only, plus a local preview under drafts/.
+const toPreview = (app, html) => html.replaceAll(`"/apps/${app.slug}/`, `"/drafts/apps/${app.slug}/`)
+  .replace('<main id="main" class="', '<p class="draft-flag mono wrap">Draft · not published · local preview only</p>\n<main id="main" class="');
+for (const app of drafts) {
+  const docs = docsOf(app);
+  if (!docs.length) continue;
+  out(`drafts/apps/${app.slug}/index.html`, toPreview(app, landingPage(app)));
+  for (const d of docs) {
+    out(`drafts/apps/${app.slug}/${d}/index.html`, toPreview(app, docPage(app, d, 'preview')));
+    const page = docPage(app, d, 'unlisted');
+    for (const legacy of app.docs[d].legacy || []) out(legacy.slice(1), page);
+  }
+}
+
 out('apps/index.html', appsIndex());
 out('sitemap.xml', sitemap());
 
 const indexPath = join(ROOT, 'index.html');
 let index = readFileSync(indexPath, 'utf8');
 index = inject(index, 'header', header(''));
-index = inject(index, 'apps', `      ${shelf()}`);
+index = inject(index, 'apps', `      ${details()}`);
 index = inject(index, 'footer', footer());
 out('index.html', index);
+
+// A draft must never ship /apps/<slug>/ (the Dockerfile copies all of apps/).
+// .dockerignore excludes each draft's folder from the image even if old
+// generated files are still in the tree, and drafts/ is never shipped.
+const ignorePath = join(ROOT, '.dockerignore');
+const ignoreBlock = `# build:drafts (generated by tools/build.mjs: draft apps never ship)\ndrafts\n${drafts.map(a => `apps/${a.slug}`).join('\n')}\n# /build:drafts`;
+let ignore = readFileSync(ignorePath, 'utf8');
+const ignoreRe = /# build:drafts[\s\S]*?# \/build:drafts/;
+ignore = ignoreRe.test(ignore) ? ignore.replace(ignoreRe, ignoreBlock) : ignore.replace(/\n*$/, '\n') + ignoreBlock + '\n';
+out('.dockerignore', ignore);
+const leftover = drafts.filter(a => existsSync(join(ROOT, 'apps', a.slug))).map(a => `apps/${a.slug}`);
+if (leftover.length) {
+  console.warn(`Note: old public pages for draft apps are still in the tree (excluded from the image by .dockerignore):\n  git rm -r ${leftover.join(' ')}`);
+}
 
 if (CHECK) {
   if (stale.length) { console.error('Out of date:\n  ' + stale.join('\n  ')); process.exit(1); }
   console.log('All generated files are up to date.');
 } else {
-  console.log(`Built ${published.length} apps.`);
+  console.log(`Built ${published.length} public apps; ${drafts.length} drafts kept off the public site.`);
 }

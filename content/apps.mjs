@@ -11,6 +11,14 @@
 // TO ADD AN APP: add an entry below, drop its doc fragments in
 // content/apps/<slug>/, run `node tools/build.mjs`, commit the output.
 // The doc's canonical URL is /apps/<slug>/<doc>; point App Store Connect there.
+//
+// draft: true keeps an app out of the public site entirely: no /apps/<slug>/
+// pages, no listing on the home page or /apps/, no footer link, not in the
+// sitemap. Its `legacy` URLs (already given to App Store Connect / App
+// Review) keep serving the verbatim copy, unlisted and noindex, exactly as
+// they did before the redesign. A local-only preview of the full app pages
+// is written to drafts/apps/<slug>/ (never copied into the Docker image).
+// To release an app, delete its `draft: true` and rebuild.
 
 // Default document names; an app's doc can override with `title`.
 export const DOC_TITLES = {
@@ -36,6 +44,8 @@ export const APPS = [
       'No account. Logs, DBC files and bus traffic stay on your device.',
     ],
     appStore: 'https://apps.apple.com/us/app/cannery/id6807928738',
+    // CANnery is U6 in the hero drawing.
+    xref: { text: 'Drawn as U6 on the system drawing', href: '/#system' },
     docs: {
       privacy: { legacy: ['/cannery/privacy.html', '/cannery/privacy/index.html'] },
       support: { legacy: ['/cannery/support.html', '/cannery/support/index.html'] },
@@ -43,6 +53,7 @@ export const APPS = [
   },
   {
     slug: 'lodebook',
+    draft: true,
     name: 'Lodebook',
     platforms: 'iPhone, iPad & Mac',
     kind: 'Field notebook for mining claims',
@@ -63,6 +74,7 @@ export const APPS = [
   },
   {
     slug: 'snap-and-wind',
+    draft: true,
     name: 'Snap & Wind',
     platforms: 'iPhone',
     kind: 'Disposable-film camera',
@@ -108,8 +120,8 @@ export const APPS = [
     kind: '',
     monogram: 'K',
     accent: 'ink',
-    // No published page yet: listed on the shelf, no landing or docs generated.
-    unpublished: true,
+    // No copy yet: nothing is generated, not even a draft preview.
+    draft: true,
     summary: '',
     facts: [],
     docs: {},

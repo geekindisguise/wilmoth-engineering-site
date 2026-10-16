@@ -7,7 +7,7 @@ script (no dependencies) generates the app pages, and its output is committed.
 ## Structure
 
 ```
-index.html              Home: system hero, work, apps, off the bench, about, contact
+index.html              Home: system hero, work, apps (detail views), off the bench, about, contact
 css/style.css           All styles; design tokens at the top (light + dark)
 js/system/              The hero drawing
   graph.js              The EV system: parts, nets, scroll states (single source)
@@ -18,9 +18,11 @@ js/system/              The hero drawing
 js/vendor/three.js      Minified three.js subset (tools/vendor-three.mjs)
 content/apps.mjs        Per-app data: name, platforms, facts, docs, legacy URLs
 content/apps/<slug>/    Verbatim legal/support copy: privacy.html, terms.html, support.html
-apps/                   GENERATED: /apps/, /apps/<slug>/, /apps/<slug>/<doc>/
+apps/                   GENERATED: /apps/, /apps/<slug>/, /apps/<slug>/<doc>/ (released apps only)
+drafts/apps/<slug>/     GENERATED: local-only preview of draft apps. Never deployed.
 privacy.html, terms.html, cannery/, lodebook/, snap-and-wind/
                         GENERATED legacy URLs (App Store links). Do not hand-edit.
+.dockerignore           Has a GENERATED block keeping drafts out of the image
 tools/build.mjs         Generates the above + header/apps/footer inside index.html
 tools/check-legal.mjs   Fails if any legal text or link target drifted
 tools/serve.mjs         Local preview that resolves paths exactly like the Caddyfile
@@ -48,6 +50,21 @@ node tools/serve.mjs 8789     # preview on http://0.0.0.0:8789/
 New apps need no legacy URLs and no Dockerfile change: everything lives under
 `apps/`, which the Dockerfile already copies.
 
+### Drafts (unreleased apps)
+
+Only released apps appear on the public site. Today that's **CANnery** and
+**Doodle A Day**. An entry with `draft: true` (Lodebook, Snap & Wind,
+Keepsake) gets no `/apps/<slug>/` pages, no listing on the home page or
+`/apps/`, no footer link and no sitemap entry. If it already has `legacy`
+URLs that App Store Connect or App Review uses, those keep serving the
+verbatim copy, **unlisted** (nothing links to them) and `noindex`, as they did
+before the redesign. A full preview of the draft's pages is written to
+`drafts/apps/<slug>/` (open `http://localhost:8789/drafts/apps/<slug>/`).
+`tools/build.mjs` keeps a generated block in `.dockerignore` so neither
+`drafts/` nor any draft's `apps/<slug>/` can ship.
+
+To release a draft: delete `draft: true`, run `node tools/build.mjs`, commit.
+
 ## Legal pages
 
 Legal and support copy is reproduced **verbatim** from each app. Do not
@@ -64,11 +81,8 @@ the page with a 200, with a `<link rel="canonical">` pointing at the new
 | `/terms.html` | `/apps/doodle-a-day/terms` |
 | `/cannery/privacy`, `/cannery/privacy.html`, `/cannery/privacy/` | `/apps/cannery/privacy` |
 | `/cannery/support` (+ `.html`, `/`) | `/apps/cannery/support` |
-| `/lodebook/privacy` (+ `.html`, `/`) | `/apps/lodebook/privacy` |
-| `/lodebook/support` (+ `.html`, `/`) | `/apps/lodebook/support` |
-| `/snap-and-wind/privacy` (+ `.html`, `/`) | `/apps/snap-and-wind/privacy` |
-| `/snap-and-wind/terms` (+ `.html`, `/`) | `/apps/snap-and-wind/terms` |
-| `/snap-and-wind/support` (+ `.html`, `/`) | `/apps/snap-and-wind/support` |
+| `/lodebook/privacy`, `/lodebook/support` (+ `.html`, `/`) | none: draft, unlisted + `noindex` |
+| `/snap-and-wind/privacy`, `/terms`, `/support` (+ `.html`, `/`) | none: draft, unlisted + `noindex` |
 
 `/snap-and-wind/review-demo.mp4` is unchanged and still served `noindex`.
 
@@ -82,8 +96,8 @@ its width axis) and IBM Plex Mono (annotations).
 
 The hero is a single-line diagram of a typical EV conversion, drawn from
 `js/system/graph.js`. Scrolling walks through a real startup sequence
-(12 V wake, BMS check, precharge, main contactor, drive, J1772 charge, reading
-the bus in CANnery). CAN frames are broadcast the way CAN works: down the
+(12 V wake, BMS check, K2 (−) and precharge, K1 (+) so both contactors are
+closed, drive, J1772 charge, reading the bus in CANnery). CAN frames are broadcast the way CAN works: down the
 sender's stub, then both ways along a trunk terminated with 120 Ω at each end.
 Message names in the bus trace are illustrative, and labelled that way.
 
@@ -101,5 +115,5 @@ To change which three.js classes are bundled, edit `NAMES` in
 ## Hosting
 
 Live on Railway (`wilmoth-engineering`), served by Caddy (see `Caddyfile`,
-`Dockerfile`). Apex is `wilmoth.engineering`. `content/`, `tools/` and
-`design-pass/` are not copied into the image. Do not serve `luke/` (local only).
+`Dockerfile`). Apex is `wilmoth.engineering`. `content/`, `tools/`,
+`design-pass/` and `drafts/` are not copied into the image. Do not serve `luke/` (local only).

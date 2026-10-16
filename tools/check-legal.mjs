@@ -2,7 +2,8 @@
 // Guards the "legal copy is verbatim" rule. For every legal/support page
 // that existed at the given git ref, compares the text of its old <main>
 // with the text of the generated <article class="legal"> at both the old
-// URL (legacy file) and the canonical /apps/<slug>/<doc>/ page. Also checks
+// URL (legacy file) and the canonical /apps/<slug>/<doc>/ page (for a draft
+// app, its local preview under drafts/). Also checks
 // link targets inside the copy still resolve to the same pages.
 //
 //   node tools/check-legal.mjs            # against 8f9de4d (pre-overhaul main)
@@ -36,7 +37,8 @@ for (const app of APPS) {
       try { old = execFileSync('git', ['show', `${REF}:${legacy.slice(1)}`], { cwd: ROOT, encoding: 'utf8' }); }
       catch { console.error(`MISSING at ${REF}: ${legacy}`); failures++; continue; }
       const oldMain = old.match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
-      for (const now of [legacy, `/apps/${app.slug}/${doc}/index.html`]) {
+      // Draft apps have no public /apps/ page; check their local preview instead.
+      for (const now of [legacy, `${app.draft ? '/drafts' : ''}/apps/${app.slug}/${doc}/index.html`]) {
         const html = readFileSync(join(ROOT, now.slice(1)), 'utf8');
         const m = html.match(/<article class="legal">([\s\S]*?)<\/article>/);
         checked++;

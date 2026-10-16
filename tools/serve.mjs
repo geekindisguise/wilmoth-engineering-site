@@ -26,6 +26,10 @@ const TYPES = {
 const REDIRECTS = {};
 
 const BLOCKED = /^\/(\.git|tools|content|design-pass|node_modules)(\/|$)|\.md$/;
+// Draft apps' /apps/<slug>/ never ships (.dockerignore), so don't serve it
+// here either. Their local preview lives under /drafts/apps/<slug>/.
+const { APPS } = await import('../content/apps.mjs');
+const DRAFT = new RegExp(`^/apps/(${APPS.filter(a => a.draft).map(a => a.slug).join('|') || '(?!)'})(/|$)`);
 
 async function isFile(p) {
   try { return (await stat(p)).isFile(); } catch { return false; }
@@ -38,7 +42,7 @@ createServer(async (req, res) => {
     res.writeHead(301, { Location: REDIRECTS[path] + url.search });
     return res.end();
   }
-  if (BLOCKED.test(path)) { res.writeHead(404); return res.end('Not found'); }
+  if (BLOCKED.test(path) || DRAFT.test(path)) { res.writeHead(404); return res.end('Not found'); }
 
   const base = normalize(join(ROOT, path));
   if (!base.startsWith(ROOT)) { res.writeHead(403); return res.end(); }
