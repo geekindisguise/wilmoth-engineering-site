@@ -1,6 +1,8 @@
 FROM caddy:2-alpine
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY index.html privacy.html terms.html app-ads.txt sitemap.xml /usr/share/caddy/
+# Favicons and web app icons (sources: we-brand-claude final/).
+COPY favicon.ico favicon.svg apple-touch-icon.png icon-192.png icon-512.png icon-maskable-512.png site.webmanifest /usr/share/caddy/
 COPY css /usr/share/caddy/css
 COPY js /usr/share/caddy/js
 COPY assets /usr/share/caddy/assets

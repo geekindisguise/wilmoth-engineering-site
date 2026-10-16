@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WE mark — header + favicon strip</title>
+<style>
+  :root { --ink: #16181b; --paper: #ebe6da; }
+  * { box-sizing: border-box; }
+  body { margin: 0; width: 1440px; background: var(--paper); color: var(--ink);
+         font: 12px/1.3 Menlo, monospace; letter-spacing: .04em; }
+  iframe { display: block; width: 1440px; height: 88px; border: 0; border-bottom: 1.5px solid var(--ink); }
+  h2 { margin: 0; padding: 18px 32px 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+  .panel { margin: 10px 32px 18px; padding: 18px 22px; border-radius: 6px; display: flex; align-items: flex-end; gap: 28px; }
+  .light { background: #f7f7f5; color: #5c5a55; border: 1px solid #d6cebd; }
+  .dark  { background: #202124; color: #9a968d; }
+  figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .zoom { image-rendering: pixelated; }
+  .sep { width: 1px; align-self: stretch; background: currentColor; opacity: .3; }
+</style>
+</head>
+<body>
+<iframe src="http://127.0.0.1:8789/" scrolling="no" title="Site header"></iframe>
+<h2>Favicon strip · 16 · 32 · 48 · 180 · 512 at 1:1 · 16 and 32 at 8× nearest-neighbour</h2>
+<!-- Sources: the exact files shipped at the site root (favicon-16/32/48 are the .ico's entries). -->
+<script>
+  const F = 'file:///Users/jacobwilmoth/Developer/we-brand-claude/final/';
+  const one = (src, size, label, cls = '') =>
+    `<figure><img class="${cls}" src="${F + src}" width="${size}" height="${size}" alt=""><figcaption>${label}</figcaption></figure>`;
+  const strip = () => [
+    one('favicon-16.png', 16, '16'), one('favicon-32.png', 32, '32'), one('favicon-48.png', 48, '48'),
+    one('apple-touch-icon.png', 180, '180 apple-touch'), one('icon-512.png', 512, '512'),
+    '<span class="sep"></span>',
+    one('favicon-16.png', 128, '16 ×8', 'zoom'), one('favicon-32.png', 256, '32 ×8', 'zoom'),
+  ].join('');
+  for (const cls of ['light', 'dark'])
+    document.write(`<div class="panel ${cls}">${strip()}</div>`);
+</script>
+</body>
+</html>

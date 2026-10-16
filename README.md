@@ -22,6 +22,9 @@ apps/                   GENERATED: /apps/, /apps/<slug>/, /apps/<slug>/<doc>/ (r
 drafts/apps/<slug>/     GENERATED: local-only preview of draft apps. Never deployed.
 privacy.html, terms.html, cannery/, lodebook/, snap-and-wind/
                         GENERATED legacy URLs (App Store links). Do not hand-edit.
+favicon.ico, favicon.svg, apple-touch-icon.png, icon-*.png, site.webmanifest
+                        WE mark icons, copied from the we-brand-claude repo
+                        (final/; `python3 tools/final.py --site <this repo>`)
 .dockerignore           Has a GENERATED block keeping drafts out of the image
 tools/build.mjs         Generates the above + header/apps/footer inside index.html
 tools/check-legal.mjs   Fails if any legal text or link target drifted

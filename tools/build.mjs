@@ -30,7 +30,12 @@ function out(rel, html) {
 
 // ---------------------------------------------------------------- partials
 
-const FAVICON = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#16181b"/><path d="M4 16h8M20 16h8M12 8v16M17 12v8" stroke="#f1ede4" stroke-width="2.6" stroke-linecap="round"/><circle cx="26" cy="7" r="2.6" fill="#e2560b"/></svg>')}`;
+// Icons live at the site root; sources and the master mark are in the
+// we-brand-claude repo (final/, built by tools/final.py).
+const ICONS = `<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">`;
 
 function head({ title, description, canonical, noindex, extra = '' }) {
   if (noindex) extra = `<meta name="robots" content="noindex">\n${extra}`;
@@ -43,7 +48,7 @@ function head({ title, description, canonical, noindex, extra = '' }) {
 ${description ? `<meta name="description" content="${esc(description)}">\n` : ''}${canonical ? `<link rel="canonical" href="${ORIGIN}${canonical}">\n` : ''}<meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f1ede4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#121416" media="(prefers-color-scheme: dark)">
-<link rel="icon" href="${FAVICON}">
+${ICONS}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -51,8 +56,9 @@ ${description ? `<meta name="description" content="${esc(description)}">\n` : ''
 ${extra}</head>`;
 }
 
-// Battery-cell schematic symbol: long plate (+), short plate (−).
-const MARK = `<svg class="brand-mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><path d="M3 16h9M20 16h9M12 7v18M17 11v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="26" cy="7" r="2.4" class="brand-mark-dot"/></svg>`;
+// The WE mark: one PCB trace (the W's right leg is the E's spine) starting at
+// a via. Trace is currentColor; the via takes the accent via .brand-mark-dot.
+const MARK = `<svg class="brand-mark" viewBox="8 15 48 34" width="28" height="20" aria-hidden="true"><path d="M14 24V45" fill="none" stroke="currentColor" stroke-width="4.5"/><path d="M14 45L25 34L36 45H52M36 45V21H52M36 33H48" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path class="brand-mark-dot" fill-rule="evenodd" d="M9 21a5 5 0 1 0 10 0a5 5 0 1 0-10 0ZM12.2 21a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0-3.6 0Z"/></svg>`;
 
 function header(current) {
   const item = (href, label, key) =>
@@ -313,6 +319,7 @@ out('sitemap.xml', sitemap());
 
 const indexPath = join(ROOT, 'index.html');
 let index = readFileSync(indexPath, 'utf8');
+index = inject(index, 'icons', ICONS);
 index = inject(index, 'header', header(''));
 index = inject(index, 'apps', `      ${details()}`);
 index = inject(index, 'footer', footer());

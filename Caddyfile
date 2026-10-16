@@ -18,6 +18,14 @@
 	encode gzip
 	@reviewdemo path /snap-and-wind/review-demo.mp4
 	header @reviewdemo X-Robots-Tag "noindex, nofollow, noarchive"
+	# Icon types, set explicitly so they don't depend on the image's mime table
+	# (file_server keeps a Content-Type that is already set).
+	@ico path *.ico
+	header @ico Content-Type image/x-icon
+	@svg path *.svg
+	header @svg Content-Type image/svg+xml
+	@webmanifest path *.webmanifest
+	header @webmanifest Content-Type application/manifest+json
 	try_files {path} {path}.html {path}/index.html
 	file_server
 }
