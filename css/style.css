@@ -351,6 +351,7 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .parts-key li { break-inside: avoid; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .parts-key b { font-weight: 500; color: var(--ink); display: inline-block; min-width: 4.4em; }
 .still .parts-key { display: block; }
+.still .system-instruments { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .still .bus-trace { display: none; }
 .cmp.is-rx .body { stroke: var(--can); stroke-width: .05; }
 .has-focus .cmp:not(.is-focus) { opacity: .42; }
