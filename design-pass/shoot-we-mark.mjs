@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const cache = join(homedir(), 'Library/Caches/ms-playwright');
 const dir = readdirSync(cache).filter(d => d.startsWith('chromium-')).sort().pop();
-const chrome = join(cache, dir, 'chrome-mac/Chromium.app/Contents/MacOS/Chromium');
+const chrome = join(cache, dir, 'chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing');
 
 execFileSync(chrome, [
   '--headless=new', '--disable-gpu', '--hide-scrollbars', '--allow-file-access-from-files',
