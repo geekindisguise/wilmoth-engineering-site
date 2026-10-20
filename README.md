@@ -70,9 +70,12 @@ To release a draft: delete `draft: true`, run `node tools/build.mjs`, commit.
 
 ## Legal pages
 
-Legal and support copy is reproduced **verbatim** from each app. Do not
-reword it. It lives in `content/apps/<slug>/*.html`; the layout around it
-(header, document rail, footer) is shared and can change freely.
+Legal and support copy lives in `content/apps/<slug>/*.html`. The layout
+around it (header, document rail, footer) is shared and can change freely.
+`tools/check-legal.mjs` still compares unchanged apps with the pre-overhaul
+pages. Doodle A Day's privacy and terms were revised for version 1.1.1 on
+October 20, 2026. For those two documents the check compares the public
+pages with `content/apps/doodle-a-day/`.
 
 Every URL that App Store listings or the apps already link to still returns
 the page with a 200, with a `<link rel="canonical">` pointing at the new

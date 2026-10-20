@@ -178,6 +178,14 @@ function landingPage(app) {
   const store = app.appStore
     ? `<a class="btn btn-solid" href="${app.appStore}" rel="noopener">View on the App Store</a>`
     : '';
+  const overviewPath = join(ROOT, 'content/apps', app.slug, 'overview.html');
+  const overview = existsSync(overviewPath) ? readFileSync(overviewPath, 'utf8').trimEnd() : '';
+  const spec = overview ? overview : `<section class="app-spec" aria-labelledby="spec-h">
+    <h2 id="spec-h" class="cell-label">What it does</h2>
+    <ul class="spec-list">
+      ${app.facts.map(f => `<li>${esc(f)}</li>`).join('\n      ')}
+    </ul>
+  </section>`;
   return `${head({ title: `${app.name} — ${app.kind} | Wilmoth Engineering`, description: app.summary, canonical: app.draft ? null : appUrl(app), noindex: app.draft })}
 <body class="page-app" data-accent="${app.accent}">
 ${header('apps')}
@@ -194,12 +202,7 @@ ${header('apps')}
     </div>
   </section>
 
-  <section class="app-spec" aria-labelledby="spec-h">
-    <h2 id="spec-h" class="cell-label">What it does</h2>
-    <ul class="spec-list">
-      ${app.facts.map(f => `<li>${esc(f)}</li>`).join('\n      ')}
-    </ul>
-  </section>
+  ${spec}
 
   <section class="app-docs" aria-labelledby="docs-h">
     <h2 id="docs-h" class="cell-label">Documents</h2>
@@ -286,7 +289,7 @@ ${urls.map(u => `  <url><loc>${ORIGIN}${u}</loc></url>`).join('\n')}
 function inject(html, name, content) {
   const re = new RegExp(`(<!-- build:${name} -->)[\\s\\S]*?(<!-- /build:${name} -->)`);
   if (!re.test(html)) throw new Error(`index.html is missing the build:${name} markers`);
-  return html.replace(re, `$1\n${content}\n$2`);
+  return html.replace(re, (match, open, close) => `${open}\n${content}\n${close}`);
 }
 
 // ---------------------------------------------------------------- run
