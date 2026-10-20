@@ -112,6 +112,7 @@ export const APPS = [
       // The original App Store URLs for Doodle are at the site root.
       privacy: { legacy: ['/privacy.html'] },
       terms: { title: 'Terms of Service', legacy: ['/terms.html'] },
+      support: {},
     },
   },
   {
