@@ -16,6 +16,9 @@ import { APPS } from '../content/apps.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REF = process.argv[2] || '8f9de4d';
+// Doodle A Day's privacy and terms were rewritten for 1.1.1. Those pages
+// must match content/apps/doodle-a-day/, not the January 2026 text at REF.
+const REVISED = new Set(['doodle-a-day/privacy', 'doodle-a-day/terms']);
 
 const text = html => html
   .replace(/<[^>]+>/g, ' ')
@@ -37,17 +40,27 @@ for (const app of APPS) {
       try { old = execFileSync('git', ['show', `${REF}:${legacy.slice(1)}`], { cwd: ROOT, encoding: 'utf8' }); }
       catch { console.error(`MISSING at ${REF}: ${legacy}`); failures++; continue; }
       const oldMain = old.match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
+      const fragment = readFileSync(join(ROOT, 'content/apps', app.slug, `${doc}.html`), 'utf8');
+      const revised = REVISED.has(`${app.slug}/${doc}`);
       // Draft apps have no public /apps/ page; check their local preview instead.
       for (const now of [legacy, `${app.draft ? '/drafts' : ''}/apps/${app.slug}/${doc}/index.html`]) {
         const html = readFileSync(join(ROOT, now.slice(1)), 'utf8');
         const m = html.match(/<article class="legal">([\s\S]*?)<\/article>/);
         checked++;
         if (!m) { console.error(`NO ARTICLE: ${now}`); failures++; continue; }
-        if (text(oldMain) !== text(m[1])) {
-          console.error(`TEXT DIFFERS: ${legacy} vs ${now}`); failures++;
+        if (revised) {
+          if (text(fragment) !== text(m[1])) {
+            console.error(`TEXT DIFFERS FROM SOURCE: ${now}`); failures++;
+          }
+          const a = hrefs(fragment, legacy).join(' '), b = hrefs(m[1], now).join(' ');
+          if (a !== b) { console.error(`LINKS DIFFER FROM SOURCE: ${now}\n  source: ${a}\n  page: ${b}`); failures++; }
+        } else {
+          if (text(oldMain) !== text(m[1])) {
+            console.error(`TEXT DIFFERS: ${legacy} vs ${now}`); failures++;
+          }
+          const a = hrefs(oldMain, legacy).join(' '), b = hrefs(m[1], now).join(' ');
+          if (a !== b) { console.error(`LINKS DIFFER: ${legacy} vs ${now}\n  old: ${a}\n  new: ${b}`); failures++; }
         }
-        const a = hrefs(oldMain, legacy).join(' '), b = hrefs(m[1], now).join(' ');
-        if (a !== b) { console.error(`LINKS DIFFER: ${legacy} vs ${now}\n  old: ${a}\n  new: ${b}`); failures++; }
       }
     }
   }

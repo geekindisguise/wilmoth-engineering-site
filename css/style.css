@@ -598,6 +598,10 @@ img.app-icon { width: var(--size, 64px); height: var(--size, 64px); }
 .app-hero { display: grid; grid-template-columns: auto 1fr; gap: clamp(20px, 4vw, 44px); align-items: start; padding-bottom: 44px; border-bottom: 1.5px solid var(--ink); }
 .app-hero .app-icon { width: 120px; height: 120px; }
 .app-hero .lede { margin-bottom: 24px; }
+.app-story { max-width: 68ch; padding: 32px 0 4px; }
+.app-story p { color: var(--ink-2); margin: 0 0 1em; }
+.spec-note { margin: 0 0 8px; color: var(--ink); font-weight: 650; }
+.app-close { max-width: 68ch; color: var(--ink-2); margin: 28px 0 0; padding-top: 22px; border-top: 1px solid var(--rule-2); }
 .app-hero .kicker::before { border-color: var(--accent, var(--hv)); }
 .page-app { --accent: var(--ink); }
 .app-spec, .app-docs { padding: 32px 0; border-bottom: 1px solid var(--rule-2); display: grid; grid-template-columns: 220px 1fr; gap: 20px; }

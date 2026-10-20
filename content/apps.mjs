@@ -96,16 +96,17 @@ export const APPS = [
   {
     slug: 'doodle-a-day',
     name: 'Doodle A Day',
-    platforms: 'iPhone',
-    kind: 'Doodle & mood journal',
+    platforms: 'iPhone & iPad',
+    kind: 'Daily doodle journal',
     icon: '/assets/doodle-a-day-icon-256.png', // 256px copy of DoodleADay-AppIcon-1024.png
     accent: 'pencil',
-    summary: 'A daily doodling and mood journal for iPhone. One prompt a day, one quick sketch, a running visual diary of how you’ve been feeling.',
-    // Lines sourced from the Doodle A Day privacy policy and terms.
+    summary: 'One tiny drawing a day. A year later, a hand-drawn journal you\'ll love flipping back through.',
+    // Short notes for the home shelf. The app page uses content/apps/doodle-a-day/overview.html.
     facts: [
-      'Doodles, moods and notes are stored locally on your device.',
-      'Doodle A Day Pro: sketchbook exports, custom mood colors, font customization.',
-      'Rated 4+. No account needed.',
+      'Pencil and pen are free. Watercolor and brush come with Artist.',
+      'A daily mood, with a watercolor summary of the month. Artist adds a written mood reading.',
+      'Private iCloud sync between iPhone and iPad, plus widgets and sharing.',
+      'Artist is $2.99 once and removes ads.',
     ],
     docs: {
       // The original App Store URLs for Doodle are at the site root.
