@@ -18,7 +18,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REF = process.argv[2] || '8f9de4d';
 // Doodle A Day's privacy and terms were rewritten for 1.1.1. Those pages
 // must match content/apps/doodle-a-day/, not the January 2026 text at REF.
-const REVISED = new Set(['doodle-a-day/privacy', 'doodle-a-day/terms']);
+// Snap & Wind privacy was revised November 6, 2026 and matches its content file.
+const REVISED = new Set(['doodle-a-day/privacy', 'doodle-a-day/terms', 'snap-and-wind/privacy']);
 
 const text = html => html
   .replace(/<[^>]+>/g, ' ')
