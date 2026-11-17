@@ -108,6 +108,7 @@ export const APPS = [
       'Private iCloud sync between iPhone and iPad, plus widgets and sharing.',
       'Artist is $2.99 once and removes ads.',
     ],
+    appStore: 'https://apps.apple.com/us/app/doodle-a-day/id6757352682',
     docs: {
       // The original App Store URLs for Doodle are at the site root.
       privacy: { legacy: ['/privacy.html'] },
